@@ -1,7 +1,8 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist } from "next/font/google";
 import { ThemeProvider } from "next-themes";
 import "./globals.css";
+import { APP_CONFIG } from "@/lib/app-config";
 
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
@@ -9,8 +10,13 @@ const defaultUrl = process.env.VERCEL_URL
 
 export const metadata: Metadata = {
   metadataBase: new URL(defaultUrl),
-  title: "Next.js and Supabase Starter Kit",
-  description: "The fastest way to build apps with Next.js and Supabase",
+  title: APP_CONFIG.name,                       // was the starter-kit title
+  description: APP_CONFIG.description,          // was the starter-kit description
+  appleWebApp: { capable: true, title: APP_CONFIG.shortName, statusBarStyle: "default" },
+};
+
+export const viewport: Viewport = {
+  themeColor: APP_CONFIG.themeColor,
 };
 
 const geistSans = Geist({
