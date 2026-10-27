@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="images/icon.png">
+    <title>Hoop Harbor</title>
+    
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Tailwind Config for Inter Font -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-50 text-slate-700 antialiased min-h-screen flex flex-col">
+
+    <!-- Header Navigation -->
+    <header class="bg-slate-900 text-white w-full shadow">
+        <div class="px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <!-- Brand -->
+            <div class="flex items-center gap-3">
+                <img src="images/icon.png" class="w-12 h-12 mr-3 object-contain rounded">
+                <span class="text-xl font-bold tracking-wide">Hoop Harbor</span>
+            </div>
+
+            <!-- Navigation Links -->
+            <nav class="flex items-center gap-1 sm:gap-2 text-sm font-medium">
+                <a href="home.php" class="flex items-center gap-2 px-3 py-2 text-slate-300 hover:text-white transition-colors rounded-lg">
+                    <i class="fa-solid fa-house-chimney w-4 text-center"></i> Home
+                </a>
+                <!-- Active Link -->
+                <a href="roster.php" class="flex items-center gap-2 px-4 py-2 border border-slate-600 bg-slate-800 text-white rounded-lg transition-colors">
+                    <i class="fa-solid fa-user-group w-4 text-center text-indigo-400"></i> Roster
+                </a>
+                <a href="staff.php" class="flex items-center gap-2 px-3 py-2 text-slate-300 hover:text-white transition-colors rounded-lg">
+                    <i class="fa-solid fa-briefcase w-4 text-center"></i> Staff
+                </a>
+                <a href="settings.php" class="flex items-center gap-2 px-3 py-2 text-slate-300 hover:text-white transition-colors rounded-lg">
+                    <i class="fa-solid fa-gear w-4 text-center"></i> Settings
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="flex-grow p-6 sm:p-8 w-full max-w-7xl mx-auto">
+        
+        <!-- Page Title -->
+        <h1 class="text-2xl font-bold text-slate-800 mb-6">Athlete Roster</h1>
+
+        <!-- Data Card -->
+        <div class="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden flex flex-col">
+            
+            <!-- Toolbar -->
+            <div class="p-5 border-b border-slate-200 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 bg-white">
+                
+                <!-- Left: Filters -->
+                <div class="flex flex-wrap items-center gap-4">
+                    <div class="flex items-center gap-2 text-slate-500 font-medium">
+                        <i class="fa-solid fa-filter text-sm"></i>
+                        <span class="text-sm">Filters:</span>
+                    </div>
+                    
+                    <select id="filter-class" class="bg-white border border-slate-300 text-slate-700 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block px-3 py-2 outline-none cursor-pointer">
+                        <option>Class Year</option>
+                        <option>2025</option>
+                        <option>2026</option>
+                        <option>2027</option>
+                    </select>
+
+                    <select id="filter-pos" class="bg-white border border-slate-300 text-slate-700 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block px-3 py-2 outline-none cursor-pointer">
+                        <option>Position</option>
+                        <option>Quarterback</option>
+                        <option>Point Guard</option>
+                        <option>Midfielder</option>
+                    </select>
+
+                    <select id="filter-status" class="bg-white border border-slate-300 text-slate-700 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block px-3 py-2 outline-none cursor-pointer w-full sm:w-auto mt-2 sm:mt-0">
+                        <option>Status</option>
+                        <option>Committed</option>
+                        <option>Offered</option>
+                        <option>Evaluating</option>
+                        <option>Target</option>
+                    </select>
+                </div>
+
+                <!-- Right: Search & Action -->
+                <div class="flex flex-wrap items-center gap-4 w-full lg:w-auto">
+                    <!-- Search Input -->
+                    <div class="relative w-full sm:w-64">
+                        <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                            <i class="fa-solid fa-magnifying-glass text-slate-400"></i>
+                        </div>
+                        <input type="text" id="search-input" class="bg-white border border-slate-300 text-slate-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-9 pr-3 py-2 outline-none transition-shadow" placeholder="Search athletes...">
+                    </div>
+                    
+                    <!-- New Recruit Button -->
+                    <button id="new-recruit-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg text-sm px-4 py-2 flex items-center gap-2 transition-colors whitespace-nowrap w-full sm:w-auto justify-center shadow-sm">
+                        <i class="fa-solid fa-plus text-xs"></i> New Recruit
+                    </button>
+                </div>
+            </div>
+
+            <!-- Table Section -->
+            <div class="overflow-x-auto w-full">
+                <table class="w-full text-left text-sm whitespace-nowrap">
+                    <!-- Table Header -->
+                    <thead class="bg-slate-50 border-b border-slate-200 text-slate-500 text-xs font-bold uppercase tracking-wider">
+                        <tr>
+                            <th scope="col" class="px-6 py-4 w-1/3">Athlete Name</th>
+                            <th scope="col" class="px-6 py-4 w-1/6">Class</th>
+                            <th scope="col" class="px-6 py-4 w-1/4">Position</th>
+                            <th scope="col" class="px-6 py-4 w-1/6">Status</th>
+                        </tr>
+                    </thead>
+                    
+                    <!-- Table Body -->
+                    <tbody id="roster-body" class="divide-y divide-slate-100 bg-white">
+                        
+
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+        // 1. DOM Elements
+        const searchInput = document.getElementById('search-input');
+        const classFilter = document.getElementById('filter-class');
+        const positionFilter = document.getElementById('filter-pos');
+        const statusFilter = document.getElementById('filter-status');
+        const tableBody = document.getElementById('roster-body');
+        const newRecruitBtn = document.getElementById('new-recruit-btn');
+
+        // 2. Simulate data coming from an external dependency (API fetch, JSON, etc.)
+        // Request data api: const athletesData = await fetch('/api/athletes').then(res => res.json());
+        const athletesData = [
+            { initials: "MJ", name: "Marcus Johnson", stars: 4, classYear: "2025", position: "Quarterback", status: "Committed" },
+            { initials: "SJ", name: "Sarah Jenkins", stars: 2, classYear: "2026", position: "Point Guard", status: "Offered" },
+            { initials: "DC", name: "David Chen", stars: 3, classYear: "2025", position: "Midfielder", status: "Evaluating" },
+            { initials: "ER", name: "Elena Rodriguez", stars: 4, classYear: "2027", position: "Point Guard", status: "Target" },
+            { initials: "JC", name: "Jamal Crawford", stars: 3, classYear: "2026", position: "Quarterback", status: "Target" },
+            { initials: "TS", name: "Tyler Smith", stars: 3, classYear: "2025", position: "Quarterback", status: "Evaluating" },
+            { initials: "MJ", name: "Tommy Kim", stars: 5, classYear: "2027", position: "Hitter", status: "Committed" },
+            { initials: "SJ", name: "Savannah Jenkins", stars: 5, classYear: "2026", position: "Point Guard", status: "Offered" },
+            { initials: "DC", name: "Naman Agarwal", stars: 5, classYear: "2027", position: "Computer", status: "Evaluating" },
+            { initials: "ER", name: "Khatija Ahmed", stars: 5, classYear: "2027", position: "Hacker :)", status: "Committed" },
+            { initials: "JC", name: "Blake Horvath", stars: 5, classYear: "2026", position: "Quarterback", status: "Target" },
+            { initials: "TS", name: "Audrey Shu", stars: 5, classYear: "2027", position: "Claude Expert", status: "Offered" }
+        ];
+
+        // Helper function to generate styling based on status
+        function getStatusStyles(status) {
+            const styles = {
+                'Committed': 'bg-green-100 text-green-700',
+                'Offered': 'bg-blue-100 text-blue-700',
+                'Evaluating': 'bg-purple-100 text-purple-700',
+                'Target': 'bg-yellow-100 text-yellow-700'
+            };
+            return styles[status] || 'bg-gray-100 text-gray-700';
+        }
+
+        // Helper function to generate stars
+        function getStarsHTML(count) {
+            let stars = '';
+            for(let i=0; i<5; i++) {
+                stars += `<i class="fa-${i < count ? 'solid' : 'regular'} fa-star text-yellow-400 text-xs"></i>`;
+            }
+            return stars;
+        }
+
+        // 3. Function to Render the Table based on an array of data
+        function renderTable(dataToRender) {
+            // Clear out the current table body
+            tableBody.innerHTML = '';
+
+            // Loop through the provided data and build HTML for each row
+            dataToRender.forEach(athlete => {
+                const row = document.createElement('tr');
+                row.className = 'border-b border-gray-100 hover:bg-gray-50'; // Add your tailwind classes here
+                
+                row.innerHTML = `
+                    <td class="py-4 px-6 flex items-center gap-4">
+                        <div class="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-sm">
+                            ${athlete.initials}
+                        </div>
+                        <div>
+                            <div class="font-bold text-gray-800">${athlete.name}</div>
+                            <div class="flex gap-1 mt-1">${getStarsHTML(athlete.stars)}</div>
+                        </div>
+                    </td>
+                    <td class="py-4 px-6 text-gray-600 font-medium">${athlete.classYear}</td>
+                    <td class="py-4 px-6 text-gray-500">${athlete.position}</td>
+                    <td class="py-4 px-6">
+                        <span class="px-3 py-1 rounded-full text-sm font-semibold ${getStatusStyles(athlete.status)}">
+                            ${athlete.status}
+                        </span>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        // 4. Function to Filter the Data Array
+        function applyFilters() {
+            const searchTerm = searchInput.value.toLowerCase();
+            const classValue = classFilter.value.toLowerCase();
+            const positionValue = positionFilter.value.toLowerCase();
+            const statusValue = statusFilter.value.toLowerCase();
+
+            // Filter the raw data array
+            const filteredData = athletesData.filter(athlete => {
+                const matchesSearch = searchTerm === '' || athlete.name.toLowerCase().includes(searchTerm);
+                
+                // Check if dropdown is at default state ('all', 'class year', etc.) or matches the data
+                const matchesClass = classValue === 'all' || classValue === 'class year' || athlete.classYear === classValue;
+                const matchesPosition = positionValue === 'all' || positionValue === 'position' || athlete.position.toLowerCase() === positionValue;
+                const matchesStatus = statusValue === 'all' || statusValue === 'status' || athlete.status.toLowerCase() === statusValue;
+
+                return matchesSearch && matchesClass && matchesPosition && matchesStatus;
+            });
+
+            // Re-render the table with the newly filtered array
+            renderTable(filteredData);
+        }
+
+        // 5. Attach Event Listeners to Inputs
+        searchInput.addEventListener('input', applyFilters);
+        classFilter.addEventListener('change', applyFilters);
+        positionFilter.addEventListener('change', applyFilters);
+        statusFilter.addEventListener('change', applyFilters);
+        newRecruitBtn.addEventListener('click', () => {
+          window.location.href = 'add-recruit.html';
+        });
+
+        // 6. Initial Render (Show all athletes on page load)
+        renderTable(athletesData);
+    });
+
+
+
+    </script>
+
+  </body>
+</html>
