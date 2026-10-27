@@ -1,6 +1,4 @@
-import { redirect } from "next/navigation";
-
-// Temporary: send the homepage to the roster until the real Home page exists.
+// The homepage currently redirects to /roster (see next.config.ts).
 export default function Home() {
-  redirect("/roster");
+  return null;
 }
