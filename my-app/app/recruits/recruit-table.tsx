@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { useMemo, useState } from 'react'
-import { Filter, Plus, Search } from 'lucide-react'
+import { Filter, Plus, Search, Star } from 'lucide-react'
 import type { RecruitListItem } from '@/lib/recruits/queries'
 
 const ALL = 'All'
@@ -12,6 +12,30 @@ const selectClass =
 const name = (r: RecruitListItem) => `${r.first_name} ${r.last_name}`
 const initials = (r: RecruitListItem) => `${r.first_name[0] ?? ''}${r.last_name[0] ?? ''}`
 const unique = (values: string[]) => [...new Set(values)].sort()
+
+// Stars and Status have no data yet: a star rating is not in the F1 schema, and the
+// real pipeline status arrives with F3. We keep the columns the customer liked and
+// show a muted placeholder until then, so nobody mistakes empty for broken.
+function StarsPlaceholder() {
+  return (
+    <span className="flex gap-0.5" title="Ratings arrive in a later sprint" aria-label="No rating yet">
+      {Array.from({ length: 5 }, (_, i) => (
+        <Star key={i} className="h-3 w-3 text-slate-200" />
+      ))}
+    </span>
+  )
+}
+
+function StatusPlaceholder() {
+  return (
+    <span
+      className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-400"
+      title="Recruiting status arrives in Sprint 2 (F3)"
+    >
+      —
+    </span>
+  )
+}
 
 export function RecruitTable({ recruits }: { recruits: RecruitListItem[] }) {
   const [search, setSearch] = useState('')
@@ -83,10 +107,12 @@ export function RecruitTable({ recruits }: { recruits: RecruitListItem[] }) {
                   <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-blue-100 text-sm font-bold text-blue-600">{initials(r)}</div>
                   <div className="min-w-0">
                     <div className="truncate font-bold text-gray-800">{name(r)}</div>
+                    <div className="mt-0.5"><StarsPlaceholder /></div>
                     <div className="truncate text-sm text-slate-500">
                       {[r.graduation_year, r.positions.join('/'), r.high_school].filter(Boolean).join(' · ')}
                     </div>
                   </div>
+                  <StatusPlaceholder />
                 </Link>
               </li>
             ))}
@@ -101,6 +127,7 @@ export function RecruitTable({ recruits }: { recruits: RecruitListItem[] }) {
                   <th scope="col" className="px-6 py-4">Grad Year</th>
                   <th scope="col" className="px-6 py-4">Position</th>
                   <th scope="col" className="px-6 py-4">School</th>
+                  <th scope="col" className="px-6 py-4">Status</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 bg-white">
@@ -109,12 +136,16 @@ export function RecruitTable({ recruits }: { recruits: RecruitListItem[] }) {
                     <td className="px-6 py-4">
                       <Link href={`/recruits/${r.id}`} className="flex items-center gap-4">
                         <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100 text-sm font-bold text-blue-600">{initials(r)}</div>
-                        <span className="font-bold text-gray-800 hover:text-indigo-600">{name(r)}</span>
+                        <div>
+                          <span className="font-bold text-gray-800 hover:text-indigo-600">{name(r)}</span>
+                          <div className="mt-1"><StarsPlaceholder /></div>
+                        </div>
                       </Link>
                     </td>
                     <td className="px-6 py-4 font-medium text-gray-600">{r.graduation_year}</td>
                     <td className="px-6 py-4 text-gray-500">{r.positions.join(', ')}</td>
                     <td className="px-6 py-4 text-gray-500">{r.high_school}</td>
+                    <td className="px-6 py-4"><StatusPlaceholder /></td>
                   </tr>
                 ))}
               </tbody>
