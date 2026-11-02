@@ -9,7 +9,8 @@ Built with Next.js (TypeScript, React, Tailwind, shadcn/ui), Supabase (PostgreSQ
 ```
 .github/workflows/ci.yml   CI: lint, types, unit tests, build, Playwright
 my-app/                    the Next.js application
-  app/                     pages (folder = URL), e.g. app/roster/page.tsx -> /roster
+  app/                     pages (folder = URL), e.g. app/recruits/page.tsx -> /recruits
+    recruits/              F1: list, new, profile ([id]), edit ([id]/edit), save logic (actions.ts)
     auth/                  sign-in, sign-up, password reset pages
     manifest.ts            PWA manifest
   components/
@@ -17,6 +18,7 @@ my-app/                    the Next.js application
     ui/                    shadcn/ui building blocks (button, card, input...)
     *-form.tsx             auth forms
   lib/
+    recruits/              recruit fields, form validation, database queries, access check
     app-config.ts          app name and colors (rebrand here)
     supabase/              Supabase clients and the login guard (proxy.ts)
   proxy.ts                 runs the login guard before each request
@@ -24,6 +26,7 @@ my-app/                    the Next.js application
   supabase/
     migrations/            database schema changes (SQL, in order)
     seed.sql               fictional sample data for development
+    add-staff-member.sql   gives an account access to recruit data
   tests/e2e/               Playwright browser tests
   *.test.ts                Vitest unit tests sit next to the code they test
 ```
@@ -39,6 +42,15 @@ cp .env.example .env.local      # then fill in the Supabase URL and key
 npx supabase start              # local database; prints the URL and key
 npm run dev                     # http://localhost:3000
 ```
+
+### Seeing recruits (read this if the list is empty)
+
+The database only shows recruits to a user who is **signed in** *and* listed in `staff_members`.
+Anyone else gets an empty list, not an error. The app shows a yellow banner telling you which case you are in.
+
+1. Sign up at `/auth/sign-up` (on hosted Supabase, confirm the email).
+2. Run `my-app/supabase/add-staff-member.sql` with your email in the Supabase SQL Editor for that database.
+3. Sign in again. Local seed recruits come from `npx supabase db reset`; the hosted test database needs `seed.sql` run by hand.
 
 ## Scripts (run inside `my-app/`)
 
