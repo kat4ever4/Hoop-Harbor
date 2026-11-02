@@ -47,8 +47,10 @@ export async function updateSession(request: NextRequest) {
   const { data } = await supabase.auth.getClaims();
   const user = data?.claims;
 
+  const requireLogin = process.env.REQUIRE_LOGIN !== "false";
+
   if (
-    request.nextUrl.pathname !== "/" &&
+    requireLogin && request.nextUrl.pathname !== "/" &&
     !user &&
     !request.nextUrl.pathname.startsWith("/login") &&
     !request.nextUrl.pathname.startsWith("/auth")
