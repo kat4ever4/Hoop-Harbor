@@ -1,11 +1,7 @@
-"use client";
-
-import { useMemo, useState } from "react";
-import { Filter, Plus, Search, Star } from "lucide-react";
 import { SiteNav } from "@/components/layout/site-nav";
 
 
-export default function RosterPage() {
+export default function StaffPage() {
   return (
     <div className="flex min-h-screen flex-col bg-slate-50 text-slate-700">
       <SiteNav />
