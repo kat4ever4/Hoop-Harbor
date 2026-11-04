@@ -24,7 +24,7 @@ my-app/                    the Next.js application
   public/                  static files (icons, images)
   supabase/
     migrations/            database schema changes (SQL, in order)
-    seed.sql               fictional sample data for development
+    seed*.sql              fictional sample data for development
     add-staff-member.sql   gives an account access to recruit data
   tests/e2e/               Playwright browser tests
   *.test.ts                Vitest unit tests sit next to the code they test
@@ -46,19 +46,19 @@ Open http://localhost:3000. Sign up and grant your account staff access using th
 
 ## Documentation
 
-- [New recruiting tables and fictional sample data](docs/database-v2.md)
+- [Recruiting tables, promotion, and fictional sample data](docs/database-v2.md)
 - [Full installation and environment setup](docs/setup.md)
 - [Account access and sample recruits](docs/setup.md#account-access-and-sample-recruits)
 - [Common setup errors](docs/setup.md#common-errors)
 
 ### Seeing recruits (read this if the list is empty)
 
-The database only shows recruits to a user who is **signed in** *and* listed in `staff_members`.
+The database only shows recruits to a user who is **signed in** *and* active in `staff_members`.
 Anyone else gets an empty list, not an error. The app shows a yellow banner telling you which case you are in.
 
 1. Sign up at `/auth/sign-up` (on hosted Supabase, confirm the email).
 2. Run `my-app/supabase/add-staff-member.sql` with your email in the Supabase SQL Editor for that database.
-3. Sign in again. Local seed recruits come from `npx supabase db reset`; the hosted test database needs `seed.sql` run by hand.
+3. Sign in again. Local seed recruits come from `npx supabase db reset`; the hosted test database needs the current migrations and seeds applied as described in [the database guide](docs/database-v2.md).
 
 ## Scripts (run inside `my-app/`)
 

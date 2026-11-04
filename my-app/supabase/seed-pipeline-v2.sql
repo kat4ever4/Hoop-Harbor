@@ -5,9 +5,9 @@
 BEGIN;
 
 DO $$ BEGIN
-IF EXISTS (SELECT 1 FROM public.recruits_v2 WHERE id = 'a2000000-0000-4000-8000-000000000001' AND pipeline_changed_by_staff_id IS NULL) THEN
-    UPDATE public.recruits_v2 SET pipeline_stage = 'identified', pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000001' WHERE id = 'a2000000-0000-4000-8000-000000000001';
-    UPDATE public.recruits_v2 SET pipeline_stage = 'identified',
+IF EXISTS (SELECT 1 FROM public.recruits WHERE id = 'a2000000-0000-4000-8000-000000000001' AND pipeline_changed_by_staff_id IS NULL) THEN
+    UPDATE public.recruits SET pipeline_stage = 'identified', pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000001' WHERE id = 'a2000000-0000-4000-8000-000000000001';
+    UPDATE public.recruits SET pipeline_stage = 'identified',
         usna_offer_date = NULL,
         usna_offered_by_staff_id = NULL,
         pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000001' WHERE id = 'a2000000-0000-4000-8000-000000000001';
@@ -15,9 +15,9 @@ END IF;
 END $$;
 
 DO $$ BEGIN
-IF EXISTS (SELECT 1 FROM public.recruits_v2 WHERE id = 'a2000000-0000-4000-8000-000000000002' AND pipeline_changed_by_staff_id IS NULL) THEN
-    UPDATE public.recruits_v2 SET pipeline_stage = 'identified', pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000002' WHERE id = 'a2000000-0000-4000-8000-000000000002';
-    UPDATE public.recruits_v2 SET pipeline_stage = 'evaluating',
+IF EXISTS (SELECT 1 FROM public.recruits WHERE id = 'a2000000-0000-4000-8000-000000000002' AND pipeline_changed_by_staff_id IS NULL) THEN
+    UPDATE public.recruits SET pipeline_stage = 'identified', pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000002' WHERE id = 'a2000000-0000-4000-8000-000000000002';
+    UPDATE public.recruits SET pipeline_stage = 'evaluating',
         usna_offer_date = NULL,
         usna_offered_by_staff_id = NULL,
         pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000002' WHERE id = 'a2000000-0000-4000-8000-000000000002';
@@ -25,9 +25,9 @@ END IF;
 END $$;
 
 DO $$ BEGIN
-IF EXISTS (SELECT 1 FROM public.recruits_v2 WHERE id = 'a2000000-0000-4000-8000-000000000003' AND pipeline_changed_by_staff_id IS NULL) THEN
-    UPDATE public.recruits_v2 SET pipeline_stage = 'identified', pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000003' WHERE id = 'a2000000-0000-4000-8000-000000000003';
-    UPDATE public.recruits_v2 SET pipeline_stage = 'priority',
+IF EXISTS (SELECT 1 FROM public.recruits WHERE id = 'a2000000-0000-4000-8000-000000000003' AND pipeline_changed_by_staff_id IS NULL) THEN
+    UPDATE public.recruits SET pipeline_stage = 'identified', pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000003' WHERE id = 'a2000000-0000-4000-8000-000000000003';
+    UPDATE public.recruits SET pipeline_stage = 'priority',
         usna_offer_date = NULL,
         usna_offered_by_staff_id = NULL,
         pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000003' WHERE id = 'a2000000-0000-4000-8000-000000000003';
@@ -35,9 +35,9 @@ END IF;
 END $$;
 
 DO $$ BEGIN
-IF EXISTS (SELECT 1 FROM public.recruits_v2 WHERE id = 'a2000000-0000-4000-8000-000000000004' AND pipeline_changed_by_staff_id IS NULL) THEN
-    UPDATE public.recruits_v2 SET pipeline_stage = 'identified', pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000001' WHERE id = 'a2000000-0000-4000-8000-000000000004';
-    UPDATE public.recruits_v2 SET pipeline_stage = 'offered',
+IF EXISTS (SELECT 1 FROM public.recruits WHERE id = 'a2000000-0000-4000-8000-000000000004' AND pipeline_changed_by_staff_id IS NULL) THEN
+    UPDATE public.recruits SET pipeline_stage = 'identified', pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000001' WHERE id = 'a2000000-0000-4000-8000-000000000004';
+    UPDATE public.recruits SET pipeline_stage = 'offered',
         usna_offer_date = '2026-10-14',
         usna_offered_by_staff_id = 'b2000000-0000-4000-8000-000000000001',
         pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000001' WHERE id = 'a2000000-0000-4000-8000-000000000004';
@@ -45,9 +45,9 @@ END IF;
 END $$;
 
 DO $$ BEGIN
-IF EXISTS (SELECT 1 FROM public.recruits_v2 WHERE id = 'a2000000-0000-4000-8000-000000000005' AND pipeline_changed_by_staff_id IS NULL) THEN
-    UPDATE public.recruits_v2 SET pipeline_stage = 'identified', pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000002' WHERE id = 'a2000000-0000-4000-8000-000000000005';
-    UPDATE public.recruits_v2 SET pipeline_stage = 'committed_to_usna',
+IF EXISTS (SELECT 1 FROM public.recruits WHERE id = 'a2000000-0000-4000-8000-000000000005' AND pipeline_changed_by_staff_id IS NULL) THEN
+    UPDATE public.recruits SET pipeline_stage = 'identified', pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000002' WHERE id = 'a2000000-0000-4000-8000-000000000005';
+    UPDATE public.recruits SET pipeline_stage = 'committed_to_usna',
         usna_offer_date = '2026-10-15',
         usna_offered_by_staff_id = 'b2000000-0000-4000-8000-000000000002',
         pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000002' WHERE id = 'a2000000-0000-4000-8000-000000000005';
@@ -55,9 +55,9 @@ END IF;
 END $$;
 
 DO $$ BEGIN
-IF EXISTS (SELECT 1 FROM public.recruits_v2 WHERE id = 'a2000000-0000-4000-8000-000000000006' AND pipeline_changed_by_staff_id IS NULL) THEN
-    UPDATE public.recruits_v2 SET pipeline_stage = 'identified', pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000003' WHERE id = 'a2000000-0000-4000-8000-000000000006';
-    UPDATE public.recruits_v2 SET pipeline_stage = 'committed_elsewhere',
+IF EXISTS (SELECT 1 FROM public.recruits WHERE id = 'a2000000-0000-4000-8000-000000000006' AND pipeline_changed_by_staff_id IS NULL) THEN
+    UPDATE public.recruits SET pipeline_stage = 'identified', pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000003' WHERE id = 'a2000000-0000-4000-8000-000000000006';
+    UPDATE public.recruits SET pipeline_stage = 'committed_elsewhere',
         usna_offer_date = NULL,
         usna_offered_by_staff_id = NULL,
         pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000003' WHERE id = 'a2000000-0000-4000-8000-000000000006';
@@ -65,9 +65,9 @@ END IF;
 END $$;
 
 DO $$ BEGIN
-IF EXISTS (SELECT 1 FROM public.recruits_v2 WHERE id = 'a2000000-0000-4000-8000-000000000007' AND pipeline_changed_by_staff_id IS NULL) THEN
-    UPDATE public.recruits_v2 SET pipeline_stage = 'identified', pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000001' WHERE id = 'a2000000-0000-4000-8000-000000000007';
-    UPDATE public.recruits_v2 SET pipeline_stage = 'not_pursuing',
+IF EXISTS (SELECT 1 FROM public.recruits WHERE id = 'a2000000-0000-4000-8000-000000000007' AND pipeline_changed_by_staff_id IS NULL) THEN
+    UPDATE public.recruits SET pipeline_stage = 'identified', pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000001' WHERE id = 'a2000000-0000-4000-8000-000000000007';
+    UPDATE public.recruits SET pipeline_stage = 'not_pursuing',
         usna_offer_date = NULL,
         usna_offered_by_staff_id = NULL,
         pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000001' WHERE id = 'a2000000-0000-4000-8000-000000000007';
@@ -75,9 +75,9 @@ END IF;
 END $$;
 
 DO $$ BEGIN
-IF EXISTS (SELECT 1 FROM public.recruits_v2 WHERE id = 'a2000000-0000-4000-8000-000000000008' AND pipeline_changed_by_staff_id IS NULL) THEN
-    UPDATE public.recruits_v2 SET pipeline_stage = 'identified', pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000002' WHERE id = 'a2000000-0000-4000-8000-000000000008';
-    UPDATE public.recruits_v2 SET pipeline_stage = 'to_be_confirmed',
+IF EXISTS (SELECT 1 FROM public.recruits WHERE id = 'a2000000-0000-4000-8000-000000000008' AND pipeline_changed_by_staff_id IS NULL) THEN
+    UPDATE public.recruits SET pipeline_stage = 'identified', pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000002' WHERE id = 'a2000000-0000-4000-8000-000000000008';
+    UPDATE public.recruits SET pipeline_stage = 'to_be_confirmed',
         usna_offer_date = NULL,
         usna_offered_by_staff_id = NULL,
         pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000002' WHERE id = 'a2000000-0000-4000-8000-000000000008';
@@ -85,9 +85,9 @@ END IF;
 END $$;
 
 DO $$ BEGIN
-IF EXISTS (SELECT 1 FROM public.recruits_v2 WHERE id = 'a2000000-0000-4000-8000-000000000009' AND pipeline_changed_by_staff_id IS NULL) THEN
-    UPDATE public.recruits_v2 SET pipeline_stage = 'identified', pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000003' WHERE id = 'a2000000-0000-4000-8000-000000000009';
-    UPDATE public.recruits_v2 SET pipeline_stage = 'identified',
+IF EXISTS (SELECT 1 FROM public.recruits WHERE id = 'a2000000-0000-4000-8000-000000000009' AND pipeline_changed_by_staff_id IS NULL) THEN
+    UPDATE public.recruits SET pipeline_stage = 'identified', pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000003' WHERE id = 'a2000000-0000-4000-8000-000000000009';
+    UPDATE public.recruits SET pipeline_stage = 'identified',
         usna_offer_date = NULL,
         usna_offered_by_staff_id = NULL,
         pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000003' WHERE id = 'a2000000-0000-4000-8000-000000000009';
@@ -95,9 +95,9 @@ END IF;
 END $$;
 
 DO $$ BEGIN
-IF EXISTS (SELECT 1 FROM public.recruits_v2 WHERE id = 'a2000000-0000-4000-8000-000000000010' AND pipeline_changed_by_staff_id IS NULL) THEN
-    UPDATE public.recruits_v2 SET pipeline_stage = 'identified', pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000001' WHERE id = 'a2000000-0000-4000-8000-000000000010';
-    UPDATE public.recruits_v2 SET pipeline_stage = 'evaluating',
+IF EXISTS (SELECT 1 FROM public.recruits WHERE id = 'a2000000-0000-4000-8000-000000000010' AND pipeline_changed_by_staff_id IS NULL) THEN
+    UPDATE public.recruits SET pipeline_stage = 'identified', pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000001' WHERE id = 'a2000000-0000-4000-8000-000000000010';
+    UPDATE public.recruits SET pipeline_stage = 'evaluating',
         usna_offer_date = NULL,
         usna_offered_by_staff_id = NULL,
         pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000001' WHERE id = 'a2000000-0000-4000-8000-000000000010';
@@ -105,9 +105,9 @@ END IF;
 END $$;
 
 DO $$ BEGIN
-IF EXISTS (SELECT 1 FROM public.recruits_v2 WHERE id = 'a2000000-0000-4000-8000-000000000011' AND pipeline_changed_by_staff_id IS NULL) THEN
-    UPDATE public.recruits_v2 SET pipeline_stage = 'identified', pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000002' WHERE id = 'a2000000-0000-4000-8000-000000000011';
-    UPDATE public.recruits_v2 SET pipeline_stage = 'priority',
+IF EXISTS (SELECT 1 FROM public.recruits WHERE id = 'a2000000-0000-4000-8000-000000000011' AND pipeline_changed_by_staff_id IS NULL) THEN
+    UPDATE public.recruits SET pipeline_stage = 'identified', pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000002' WHERE id = 'a2000000-0000-4000-8000-000000000011';
+    UPDATE public.recruits SET pipeline_stage = 'priority',
         usna_offer_date = NULL,
         usna_offered_by_staff_id = NULL,
         pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000002' WHERE id = 'a2000000-0000-4000-8000-000000000011';
@@ -115,9 +115,9 @@ END IF;
 END $$;
 
 DO $$ BEGIN
-IF EXISTS (SELECT 1 FROM public.recruits_v2 WHERE id = 'a2000000-0000-4000-8000-000000000012' AND pipeline_changed_by_staff_id IS NULL) THEN
-    UPDATE public.recruits_v2 SET pipeline_stage = 'identified', pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000003' WHERE id = 'a2000000-0000-4000-8000-000000000012';
-    UPDATE public.recruits_v2 SET pipeline_stage = 'offered',
+IF EXISTS (SELECT 1 FROM public.recruits WHERE id = 'a2000000-0000-4000-8000-000000000012' AND pipeline_changed_by_staff_id IS NULL) THEN
+    UPDATE public.recruits SET pipeline_stage = 'identified', pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000003' WHERE id = 'a2000000-0000-4000-8000-000000000012';
+    UPDATE public.recruits SET pipeline_stage = 'offered',
         usna_offer_date = '2026-10-22',
         usna_offered_by_staff_id = 'b2000000-0000-4000-8000-000000000003',
         pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000003' WHERE id = 'a2000000-0000-4000-8000-000000000012';
@@ -125,9 +125,9 @@ END IF;
 END $$;
 
 DO $$ BEGIN
-IF EXISTS (SELECT 1 FROM public.recruits_v2 WHERE id = 'a2000000-0000-4000-8000-000000000013' AND pipeline_changed_by_staff_id IS NULL) THEN
-    UPDATE public.recruits_v2 SET pipeline_stage = 'identified', pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000001' WHERE id = 'a2000000-0000-4000-8000-000000000013';
-    UPDATE public.recruits_v2 SET pipeline_stage = 'committed_to_usna',
+IF EXISTS (SELECT 1 FROM public.recruits WHERE id = 'a2000000-0000-4000-8000-000000000013' AND pipeline_changed_by_staff_id IS NULL) THEN
+    UPDATE public.recruits SET pipeline_stage = 'identified', pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000001' WHERE id = 'a2000000-0000-4000-8000-000000000013';
+    UPDATE public.recruits SET pipeline_stage = 'committed_to_usna',
         usna_offer_date = '2026-10-23',
         usna_offered_by_staff_id = 'b2000000-0000-4000-8000-000000000001',
         pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000001' WHERE id = 'a2000000-0000-4000-8000-000000000013';
@@ -135,9 +135,9 @@ END IF;
 END $$;
 
 DO $$ BEGIN
-IF EXISTS (SELECT 1 FROM public.recruits_v2 WHERE id = 'a2000000-0000-4000-8000-000000000014' AND pipeline_changed_by_staff_id IS NULL) THEN
-    UPDATE public.recruits_v2 SET pipeline_stage = 'identified', pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000002' WHERE id = 'a2000000-0000-4000-8000-000000000014';
-    UPDATE public.recruits_v2 SET pipeline_stage = 'committed_elsewhere',
+IF EXISTS (SELECT 1 FROM public.recruits WHERE id = 'a2000000-0000-4000-8000-000000000014' AND pipeline_changed_by_staff_id IS NULL) THEN
+    UPDATE public.recruits SET pipeline_stage = 'identified', pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000002' WHERE id = 'a2000000-0000-4000-8000-000000000014';
+    UPDATE public.recruits SET pipeline_stage = 'committed_elsewhere',
         usna_offer_date = NULL,
         usna_offered_by_staff_id = NULL,
         pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000002' WHERE id = 'a2000000-0000-4000-8000-000000000014';
@@ -145,9 +145,9 @@ END IF;
 END $$;
 
 DO $$ BEGIN
-IF EXISTS (SELECT 1 FROM public.recruits_v2 WHERE id = 'a2000000-0000-4000-8000-000000000015' AND pipeline_changed_by_staff_id IS NULL) THEN
-    UPDATE public.recruits_v2 SET pipeline_stage = 'identified', pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000003' WHERE id = 'a2000000-0000-4000-8000-000000000015';
-    UPDATE public.recruits_v2 SET pipeline_stage = 'not_pursuing',
+IF EXISTS (SELECT 1 FROM public.recruits WHERE id = 'a2000000-0000-4000-8000-000000000015' AND pipeline_changed_by_staff_id IS NULL) THEN
+    UPDATE public.recruits SET pipeline_stage = 'identified', pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000003' WHERE id = 'a2000000-0000-4000-8000-000000000015';
+    UPDATE public.recruits SET pipeline_stage = 'not_pursuing',
         usna_offer_date = NULL,
         usna_offered_by_staff_id = NULL,
         pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000003' WHERE id = 'a2000000-0000-4000-8000-000000000015';
@@ -155,9 +155,9 @@ END IF;
 END $$;
 
 DO $$ BEGIN
-IF EXISTS (SELECT 1 FROM public.recruits_v2 WHERE id = 'a2000000-0000-4000-8000-000000000016' AND pipeline_changed_by_staff_id IS NULL) THEN
-    UPDATE public.recruits_v2 SET pipeline_stage = 'identified', pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000001' WHERE id = 'a2000000-0000-4000-8000-000000000016';
-    UPDATE public.recruits_v2 SET pipeline_stage = 'to_be_confirmed',
+IF EXISTS (SELECT 1 FROM public.recruits WHERE id = 'a2000000-0000-4000-8000-000000000016' AND pipeline_changed_by_staff_id IS NULL) THEN
+    UPDATE public.recruits SET pipeline_stage = 'identified', pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000001' WHERE id = 'a2000000-0000-4000-8000-000000000016';
+    UPDATE public.recruits SET pipeline_stage = 'to_be_confirmed',
         usna_offer_date = NULL,
         usna_offered_by_staff_id = NULL,
         pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000001' WHERE id = 'a2000000-0000-4000-8000-000000000016';
@@ -165,9 +165,9 @@ END IF;
 END $$;
 
 DO $$ BEGIN
-IF EXISTS (SELECT 1 FROM public.recruits_v2 WHERE id = 'a2000000-0000-4000-8000-000000000017' AND pipeline_changed_by_staff_id IS NULL) THEN
-    UPDATE public.recruits_v2 SET pipeline_stage = 'identified', pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000002' WHERE id = 'a2000000-0000-4000-8000-000000000017';
-    UPDATE public.recruits_v2 SET pipeline_stage = 'identified',
+IF EXISTS (SELECT 1 FROM public.recruits WHERE id = 'a2000000-0000-4000-8000-000000000017' AND pipeline_changed_by_staff_id IS NULL) THEN
+    UPDATE public.recruits SET pipeline_stage = 'identified', pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000002' WHERE id = 'a2000000-0000-4000-8000-000000000017';
+    UPDATE public.recruits SET pipeline_stage = 'identified',
         usna_offer_date = NULL,
         usna_offered_by_staff_id = NULL,
         pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000002' WHERE id = 'a2000000-0000-4000-8000-000000000017';
@@ -175,9 +175,9 @@ END IF;
 END $$;
 
 DO $$ BEGIN
-IF EXISTS (SELECT 1 FROM public.recruits_v2 WHERE id = 'a2000000-0000-4000-8000-000000000018' AND pipeline_changed_by_staff_id IS NULL) THEN
-    UPDATE public.recruits_v2 SET pipeline_stage = 'identified', pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000003' WHERE id = 'a2000000-0000-4000-8000-000000000018';
-    UPDATE public.recruits_v2 SET pipeline_stage = 'evaluating',
+IF EXISTS (SELECT 1 FROM public.recruits WHERE id = 'a2000000-0000-4000-8000-000000000018' AND pipeline_changed_by_staff_id IS NULL) THEN
+    UPDATE public.recruits SET pipeline_stage = 'identified', pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000003' WHERE id = 'a2000000-0000-4000-8000-000000000018';
+    UPDATE public.recruits SET pipeline_stage = 'evaluating',
         usna_offer_date = NULL,
         usna_offered_by_staff_id = NULL,
         pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000003' WHERE id = 'a2000000-0000-4000-8000-000000000018';
@@ -185,9 +185,9 @@ END IF;
 END $$;
 
 DO $$ BEGIN
-IF EXISTS (SELECT 1 FROM public.recruits_v2 WHERE id = 'a2000000-0000-4000-8000-000000000019' AND pipeline_changed_by_staff_id IS NULL) THEN
-    UPDATE public.recruits_v2 SET pipeline_stage = 'identified', pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000001' WHERE id = 'a2000000-0000-4000-8000-000000000019';
-    UPDATE public.recruits_v2 SET pipeline_stage = 'priority',
+IF EXISTS (SELECT 1 FROM public.recruits WHERE id = 'a2000000-0000-4000-8000-000000000019' AND pipeline_changed_by_staff_id IS NULL) THEN
+    UPDATE public.recruits SET pipeline_stage = 'identified', pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000001' WHERE id = 'a2000000-0000-4000-8000-000000000019';
+    UPDATE public.recruits SET pipeline_stage = 'priority',
         usna_offer_date = NULL,
         usna_offered_by_staff_id = NULL,
         pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000001' WHERE id = 'a2000000-0000-4000-8000-000000000019';
@@ -195,9 +195,9 @@ END IF;
 END $$;
 
 DO $$ BEGIN
-IF EXISTS (SELECT 1 FROM public.recruits_v2 WHERE id = 'a2000000-0000-4000-8000-000000000020' AND pipeline_changed_by_staff_id IS NULL) THEN
-    UPDATE public.recruits_v2 SET pipeline_stage = 'identified', pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000002' WHERE id = 'a2000000-0000-4000-8000-000000000020';
-    UPDATE public.recruits_v2 SET pipeline_stage = 'offered',
+IF EXISTS (SELECT 1 FROM public.recruits WHERE id = 'a2000000-0000-4000-8000-000000000020' AND pipeline_changed_by_staff_id IS NULL) THEN
+    UPDATE public.recruits SET pipeline_stage = 'identified', pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000002' WHERE id = 'a2000000-0000-4000-8000-000000000020';
+    UPDATE public.recruits SET pipeline_stage = 'offered',
         usna_offer_date = '2026-10-15',
         usna_offered_by_staff_id = 'b2000000-0000-4000-8000-000000000002',
         pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000002' WHERE id = 'a2000000-0000-4000-8000-000000000020';
@@ -205,9 +205,9 @@ END IF;
 END $$;
 
 DO $$ BEGIN
-IF EXISTS (SELECT 1 FROM public.recruits_v2 WHERE id = 'a2000000-0000-4000-8000-000000000021' AND pipeline_changed_by_staff_id IS NULL) THEN
-    UPDATE public.recruits_v2 SET pipeline_stage = 'identified', pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000003' WHERE id = 'a2000000-0000-4000-8000-000000000021';
-    UPDATE public.recruits_v2 SET pipeline_stage = 'committed_to_usna',
+IF EXISTS (SELECT 1 FROM public.recruits WHERE id = 'a2000000-0000-4000-8000-000000000021' AND pipeline_changed_by_staff_id IS NULL) THEN
+    UPDATE public.recruits SET pipeline_stage = 'identified', pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000003' WHERE id = 'a2000000-0000-4000-8000-000000000021';
+    UPDATE public.recruits SET pipeline_stage = 'committed_to_usna',
         usna_offer_date = '2026-10-16',
         usna_offered_by_staff_id = 'b2000000-0000-4000-8000-000000000003',
         pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000003' WHERE id = 'a2000000-0000-4000-8000-000000000021';
@@ -215,9 +215,9 @@ END IF;
 END $$;
 
 DO $$ BEGIN
-IF EXISTS (SELECT 1 FROM public.recruits_v2 WHERE id = 'a2000000-0000-4000-8000-000000000022' AND pipeline_changed_by_staff_id IS NULL) THEN
-    UPDATE public.recruits_v2 SET pipeline_stage = 'identified', pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000001' WHERE id = 'a2000000-0000-4000-8000-000000000022';
-    UPDATE public.recruits_v2 SET pipeline_stage = 'committed_elsewhere',
+IF EXISTS (SELECT 1 FROM public.recruits WHERE id = 'a2000000-0000-4000-8000-000000000022' AND pipeline_changed_by_staff_id IS NULL) THEN
+    UPDATE public.recruits SET pipeline_stage = 'identified', pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000001' WHERE id = 'a2000000-0000-4000-8000-000000000022';
+    UPDATE public.recruits SET pipeline_stage = 'committed_elsewhere',
         usna_offer_date = NULL,
         usna_offered_by_staff_id = NULL,
         pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000001' WHERE id = 'a2000000-0000-4000-8000-000000000022';
@@ -225,9 +225,9 @@ END IF;
 END $$;
 
 DO $$ BEGIN
-IF EXISTS (SELECT 1 FROM public.recruits_v2 WHERE id = 'a2000000-0000-4000-8000-000000000023' AND pipeline_changed_by_staff_id IS NULL) THEN
-    UPDATE public.recruits_v2 SET pipeline_stage = 'identified', pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000002' WHERE id = 'a2000000-0000-4000-8000-000000000023';
-    UPDATE public.recruits_v2 SET pipeline_stage = 'not_pursuing',
+IF EXISTS (SELECT 1 FROM public.recruits WHERE id = 'a2000000-0000-4000-8000-000000000023' AND pipeline_changed_by_staff_id IS NULL) THEN
+    UPDATE public.recruits SET pipeline_stage = 'identified', pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000002' WHERE id = 'a2000000-0000-4000-8000-000000000023';
+    UPDATE public.recruits SET pipeline_stage = 'not_pursuing',
         usna_offer_date = NULL,
         usna_offered_by_staff_id = NULL,
         pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000002' WHERE id = 'a2000000-0000-4000-8000-000000000023';
@@ -235,9 +235,9 @@ END IF;
 END $$;
 
 DO $$ BEGIN
-IF EXISTS (SELECT 1 FROM public.recruits_v2 WHERE id = 'a2000000-0000-4000-8000-000000000024' AND pipeline_changed_by_staff_id IS NULL) THEN
-    UPDATE public.recruits_v2 SET pipeline_stage = 'identified', pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000003' WHERE id = 'a2000000-0000-4000-8000-000000000024';
-    UPDATE public.recruits_v2 SET pipeline_stage = 'to_be_confirmed',
+IF EXISTS (SELECT 1 FROM public.recruits WHERE id = 'a2000000-0000-4000-8000-000000000024' AND pipeline_changed_by_staff_id IS NULL) THEN
+    UPDATE public.recruits SET pipeline_stage = 'identified', pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000003' WHERE id = 'a2000000-0000-4000-8000-000000000024';
+    UPDATE public.recruits SET pipeline_stage = 'to_be_confirmed',
         usna_offer_date = NULL,
         usna_offered_by_staff_id = NULL,
         pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000003' WHERE id = 'a2000000-0000-4000-8000-000000000024';
@@ -245,9 +245,9 @@ END IF;
 END $$;
 
 DO $$ BEGIN
-IF EXISTS (SELECT 1 FROM public.recruits_v2 WHERE id = 'a2000000-0000-4000-8000-000000000025' AND pipeline_changed_by_staff_id IS NULL) THEN
-    UPDATE public.recruits_v2 SET pipeline_stage = 'identified', pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000001' WHERE id = 'a2000000-0000-4000-8000-000000000025';
-    UPDATE public.recruits_v2 SET pipeline_stage = 'identified',
+IF EXISTS (SELECT 1 FROM public.recruits WHERE id = 'a2000000-0000-4000-8000-000000000025' AND pipeline_changed_by_staff_id IS NULL) THEN
+    UPDATE public.recruits SET pipeline_stage = 'identified', pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000001' WHERE id = 'a2000000-0000-4000-8000-000000000025';
+    UPDATE public.recruits SET pipeline_stage = 'identified',
         usna_offer_date = NULL,
         usna_offered_by_staff_id = NULL,
         pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000001' WHERE id = 'a2000000-0000-4000-8000-000000000025';
@@ -255,9 +255,9 @@ END IF;
 END $$;
 
 DO $$ BEGIN
-IF EXISTS (SELECT 1 FROM public.recruits_v2 WHERE id = 'a2000000-0000-4000-8000-000000000026' AND pipeline_changed_by_staff_id IS NULL) THEN
-    UPDATE public.recruits_v2 SET pipeline_stage = 'identified', pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000002' WHERE id = 'a2000000-0000-4000-8000-000000000026';
-    UPDATE public.recruits_v2 SET pipeline_stage = 'evaluating',
+IF EXISTS (SELECT 1 FROM public.recruits WHERE id = 'a2000000-0000-4000-8000-000000000026' AND pipeline_changed_by_staff_id IS NULL) THEN
+    UPDATE public.recruits SET pipeline_stage = 'identified', pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000002' WHERE id = 'a2000000-0000-4000-8000-000000000026';
+    UPDATE public.recruits SET pipeline_stage = 'evaluating',
         usna_offer_date = NULL,
         usna_offered_by_staff_id = NULL,
         pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000002' WHERE id = 'a2000000-0000-4000-8000-000000000026';
@@ -265,9 +265,9 @@ END IF;
 END $$;
 
 DO $$ BEGIN
-IF EXISTS (SELECT 1 FROM public.recruits_v2 WHERE id = 'a2000000-0000-4000-8000-000000000027' AND pipeline_changed_by_staff_id IS NULL) THEN
-    UPDATE public.recruits_v2 SET pipeline_stage = 'identified', pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000003' WHERE id = 'a2000000-0000-4000-8000-000000000027';
-    UPDATE public.recruits_v2 SET pipeline_stage = 'priority',
+IF EXISTS (SELECT 1 FROM public.recruits WHERE id = 'a2000000-0000-4000-8000-000000000027' AND pipeline_changed_by_staff_id IS NULL) THEN
+    UPDATE public.recruits SET pipeline_stage = 'identified', pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000003' WHERE id = 'a2000000-0000-4000-8000-000000000027';
+    UPDATE public.recruits SET pipeline_stage = 'priority',
         usna_offer_date = NULL,
         usna_offered_by_staff_id = NULL,
         pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000003' WHERE id = 'a2000000-0000-4000-8000-000000000027';
@@ -275,9 +275,9 @@ END IF;
 END $$;
 
 DO $$ BEGIN
-IF EXISTS (SELECT 1 FROM public.recruits_v2 WHERE id = 'a2000000-0000-4000-8000-000000000028' AND pipeline_changed_by_staff_id IS NULL) THEN
-    UPDATE public.recruits_v2 SET pipeline_stage = 'identified', pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000001' WHERE id = 'a2000000-0000-4000-8000-000000000028';
-    UPDATE public.recruits_v2 SET pipeline_stage = 'offered',
+IF EXISTS (SELECT 1 FROM public.recruits WHERE id = 'a2000000-0000-4000-8000-000000000028' AND pipeline_changed_by_staff_id IS NULL) THEN
+    UPDATE public.recruits SET pipeline_stage = 'identified', pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000001' WHERE id = 'a2000000-0000-4000-8000-000000000028';
+    UPDATE public.recruits SET pipeline_stage = 'offered',
         usna_offer_date = '2026-10-23',
         usna_offered_by_staff_id = 'b2000000-0000-4000-8000-000000000001',
         pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000001' WHERE id = 'a2000000-0000-4000-8000-000000000028';
@@ -285,9 +285,9 @@ END IF;
 END $$;
 
 DO $$ BEGIN
-IF EXISTS (SELECT 1 FROM public.recruits_v2 WHERE id = 'a2000000-0000-4000-8000-000000000029' AND pipeline_changed_by_staff_id IS NULL) THEN
-    UPDATE public.recruits_v2 SET pipeline_stage = 'identified', pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000002' WHERE id = 'a2000000-0000-4000-8000-000000000029';
-    UPDATE public.recruits_v2 SET pipeline_stage = 'committed_to_usna',
+IF EXISTS (SELECT 1 FROM public.recruits WHERE id = 'a2000000-0000-4000-8000-000000000029' AND pipeline_changed_by_staff_id IS NULL) THEN
+    UPDATE public.recruits SET pipeline_stage = 'identified', pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000002' WHERE id = 'a2000000-0000-4000-8000-000000000029';
+    UPDATE public.recruits SET pipeline_stage = 'committed_to_usna',
         usna_offer_date = '2026-10-24',
         usna_offered_by_staff_id = 'b2000000-0000-4000-8000-000000000002',
         pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000002' WHERE id = 'a2000000-0000-4000-8000-000000000029';
@@ -295,9 +295,9 @@ END IF;
 END $$;
 
 DO $$ BEGIN
-IF EXISTS (SELECT 1 FROM public.recruits_v2 WHERE id = 'a2000000-0000-4000-8000-000000000030' AND pipeline_changed_by_staff_id IS NULL) THEN
-    UPDATE public.recruits_v2 SET pipeline_stage = 'identified', pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000003' WHERE id = 'a2000000-0000-4000-8000-000000000030';
-    UPDATE public.recruits_v2 SET pipeline_stage = 'committed_elsewhere',
+IF EXISTS (SELECT 1 FROM public.recruits WHERE id = 'a2000000-0000-4000-8000-000000000030' AND pipeline_changed_by_staff_id IS NULL) THEN
+    UPDATE public.recruits SET pipeline_stage = 'identified', pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000003' WHERE id = 'a2000000-0000-4000-8000-000000000030';
+    UPDATE public.recruits SET pipeline_stage = 'committed_elsewhere',
         usna_offer_date = NULL,
         usna_offered_by_staff_id = NULL,
         pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000003' WHERE id = 'a2000000-0000-4000-8000-000000000030';
@@ -305,9 +305,9 @@ END IF;
 END $$;
 
 DO $$ BEGIN
-IF EXISTS (SELECT 1 FROM public.recruits_v2 WHERE id = 'a2000000-0000-4000-8000-000000000031' AND pipeline_changed_by_staff_id IS NULL) THEN
-    UPDATE public.recruits_v2 SET pipeline_stage = 'identified', pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000001' WHERE id = 'a2000000-0000-4000-8000-000000000031';
-    UPDATE public.recruits_v2 SET pipeline_stage = 'not_pursuing',
+IF EXISTS (SELECT 1 FROM public.recruits WHERE id = 'a2000000-0000-4000-8000-000000000031' AND pipeline_changed_by_staff_id IS NULL) THEN
+    UPDATE public.recruits SET pipeline_stage = 'identified', pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000001' WHERE id = 'a2000000-0000-4000-8000-000000000031';
+    UPDATE public.recruits SET pipeline_stage = 'not_pursuing',
         usna_offer_date = NULL,
         usna_offered_by_staff_id = NULL,
         pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000001' WHERE id = 'a2000000-0000-4000-8000-000000000031';
@@ -315,9 +315,9 @@ END IF;
 END $$;
 
 DO $$ BEGIN
-IF EXISTS (SELECT 1 FROM public.recruits_v2 WHERE id = 'a2000000-0000-4000-8000-000000000032' AND pipeline_changed_by_staff_id IS NULL) THEN
-    UPDATE public.recruits_v2 SET pipeline_stage = 'identified', pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000002' WHERE id = 'a2000000-0000-4000-8000-000000000032';
-    UPDATE public.recruits_v2 SET pipeline_stage = 'to_be_confirmed',
+IF EXISTS (SELECT 1 FROM public.recruits WHERE id = 'a2000000-0000-4000-8000-000000000032' AND pipeline_changed_by_staff_id IS NULL) THEN
+    UPDATE public.recruits SET pipeline_stage = 'identified', pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000002' WHERE id = 'a2000000-0000-4000-8000-000000000032';
+    UPDATE public.recruits SET pipeline_stage = 'to_be_confirmed',
         usna_offer_date = NULL,
         usna_offered_by_staff_id = NULL,
         pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000002' WHERE id = 'a2000000-0000-4000-8000-000000000032';
@@ -325,9 +325,9 @@ END IF;
 END $$;
 
 DO $$ BEGIN
-IF EXISTS (SELECT 1 FROM public.recruits_v2 WHERE id = 'a2000000-0000-4000-8000-000000000033' AND pipeline_changed_by_staff_id IS NULL) THEN
-    UPDATE public.recruits_v2 SET pipeline_stage = 'identified', pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000003' WHERE id = 'a2000000-0000-4000-8000-000000000033';
-    UPDATE public.recruits_v2 SET pipeline_stage = 'identified',
+IF EXISTS (SELECT 1 FROM public.recruits WHERE id = 'a2000000-0000-4000-8000-000000000033' AND pipeline_changed_by_staff_id IS NULL) THEN
+    UPDATE public.recruits SET pipeline_stage = 'identified', pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000003' WHERE id = 'a2000000-0000-4000-8000-000000000033';
+    UPDATE public.recruits SET pipeline_stage = 'identified',
         usna_offer_date = NULL,
         usna_offered_by_staff_id = NULL,
         pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000003' WHERE id = 'a2000000-0000-4000-8000-000000000033';
@@ -335,9 +335,9 @@ END IF;
 END $$;
 
 DO $$ BEGIN
-IF EXISTS (SELECT 1 FROM public.recruits_v2 WHERE id = 'a2000000-0000-4000-8000-000000000034' AND pipeline_changed_by_staff_id IS NULL) THEN
-    UPDATE public.recruits_v2 SET pipeline_stage = 'identified', pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000001' WHERE id = 'a2000000-0000-4000-8000-000000000034';
-    UPDATE public.recruits_v2 SET pipeline_stage = 'evaluating',
+IF EXISTS (SELECT 1 FROM public.recruits WHERE id = 'a2000000-0000-4000-8000-000000000034' AND pipeline_changed_by_staff_id IS NULL) THEN
+    UPDATE public.recruits SET pipeline_stage = 'identified', pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000001' WHERE id = 'a2000000-0000-4000-8000-000000000034';
+    UPDATE public.recruits SET pipeline_stage = 'evaluating',
         usna_offer_date = NULL,
         usna_offered_by_staff_id = NULL,
         pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000001' WHERE id = 'a2000000-0000-4000-8000-000000000034';
@@ -345,9 +345,9 @@ END IF;
 END $$;
 
 DO $$ BEGIN
-IF EXISTS (SELECT 1 FROM public.recruits_v2 WHERE id = 'a2000000-0000-4000-8000-000000000035' AND pipeline_changed_by_staff_id IS NULL) THEN
-    UPDATE public.recruits_v2 SET pipeline_stage = 'identified', pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000002' WHERE id = 'a2000000-0000-4000-8000-000000000035';
-    UPDATE public.recruits_v2 SET pipeline_stage = 'priority',
+IF EXISTS (SELECT 1 FROM public.recruits WHERE id = 'a2000000-0000-4000-8000-000000000035' AND pipeline_changed_by_staff_id IS NULL) THEN
+    UPDATE public.recruits SET pipeline_stage = 'identified', pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000002' WHERE id = 'a2000000-0000-4000-8000-000000000035';
+    UPDATE public.recruits SET pipeline_stage = 'priority',
         usna_offer_date = NULL,
         usna_offered_by_staff_id = NULL,
         pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000002' WHERE id = 'a2000000-0000-4000-8000-000000000035';
@@ -355,9 +355,9 @@ END IF;
 END $$;
 
 DO $$ BEGIN
-IF EXISTS (SELECT 1 FROM public.recruits_v2 WHERE id = 'a2000000-0000-4000-8000-000000000036' AND pipeline_changed_by_staff_id IS NULL) THEN
-    UPDATE public.recruits_v2 SET pipeline_stage = 'identified', pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000003' WHERE id = 'a2000000-0000-4000-8000-000000000036';
-    UPDATE public.recruits_v2 SET pipeline_stage = 'offered',
+IF EXISTS (SELECT 1 FROM public.recruits WHERE id = 'a2000000-0000-4000-8000-000000000036' AND pipeline_changed_by_staff_id IS NULL) THEN
+    UPDATE public.recruits SET pipeline_stage = 'identified', pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000003' WHERE id = 'a2000000-0000-4000-8000-000000000036';
+    UPDATE public.recruits SET pipeline_stage = 'offered',
         usna_offer_date = '2026-10-16',
         usna_offered_by_staff_id = 'b2000000-0000-4000-8000-000000000003',
         pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000003' WHERE id = 'a2000000-0000-4000-8000-000000000036';
@@ -365,9 +365,9 @@ END IF;
 END $$;
 
 DO $$ BEGIN
-IF EXISTS (SELECT 1 FROM public.recruits_v2 WHERE id = 'a2000000-0000-4000-8000-000000000037' AND pipeline_changed_by_staff_id IS NULL) THEN
-    UPDATE public.recruits_v2 SET pipeline_stage = 'identified', pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000001' WHERE id = 'a2000000-0000-4000-8000-000000000037';
-    UPDATE public.recruits_v2 SET pipeline_stage = 'committed_to_usna',
+IF EXISTS (SELECT 1 FROM public.recruits WHERE id = 'a2000000-0000-4000-8000-000000000037' AND pipeline_changed_by_staff_id IS NULL) THEN
+    UPDATE public.recruits SET pipeline_stage = 'identified', pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000001' WHERE id = 'a2000000-0000-4000-8000-000000000037';
+    UPDATE public.recruits SET pipeline_stage = 'committed_to_usna',
         usna_offer_date = '2026-10-17',
         usna_offered_by_staff_id = 'b2000000-0000-4000-8000-000000000001',
         pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000001' WHERE id = 'a2000000-0000-4000-8000-000000000037';
@@ -375,9 +375,9 @@ END IF;
 END $$;
 
 DO $$ BEGIN
-IF EXISTS (SELECT 1 FROM public.recruits_v2 WHERE id = 'a2000000-0000-4000-8000-000000000038' AND pipeline_changed_by_staff_id IS NULL) THEN
-    UPDATE public.recruits_v2 SET pipeline_stage = 'identified', pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000002' WHERE id = 'a2000000-0000-4000-8000-000000000038';
-    UPDATE public.recruits_v2 SET pipeline_stage = 'committed_elsewhere',
+IF EXISTS (SELECT 1 FROM public.recruits WHERE id = 'a2000000-0000-4000-8000-000000000038' AND pipeline_changed_by_staff_id IS NULL) THEN
+    UPDATE public.recruits SET pipeline_stage = 'identified', pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000002' WHERE id = 'a2000000-0000-4000-8000-000000000038';
+    UPDATE public.recruits SET pipeline_stage = 'committed_elsewhere',
         usna_offer_date = NULL,
         usna_offered_by_staff_id = NULL,
         pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000002' WHERE id = 'a2000000-0000-4000-8000-000000000038';
@@ -385,9 +385,9 @@ END IF;
 END $$;
 
 DO $$ BEGIN
-IF EXISTS (SELECT 1 FROM public.recruits_v2 WHERE id = 'a2000000-0000-4000-8000-000000000039' AND pipeline_changed_by_staff_id IS NULL) THEN
-    UPDATE public.recruits_v2 SET pipeline_stage = 'identified', pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000003' WHERE id = 'a2000000-0000-4000-8000-000000000039';
-    UPDATE public.recruits_v2 SET pipeline_stage = 'not_pursuing',
+IF EXISTS (SELECT 1 FROM public.recruits WHERE id = 'a2000000-0000-4000-8000-000000000039' AND pipeline_changed_by_staff_id IS NULL) THEN
+    UPDATE public.recruits SET pipeline_stage = 'identified', pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000003' WHERE id = 'a2000000-0000-4000-8000-000000000039';
+    UPDATE public.recruits SET pipeline_stage = 'not_pursuing',
         usna_offer_date = NULL,
         usna_offered_by_staff_id = NULL,
         pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000003' WHERE id = 'a2000000-0000-4000-8000-000000000039';
@@ -395,9 +395,9 @@ END IF;
 END $$;
 
 DO $$ BEGIN
-IF EXISTS (SELECT 1 FROM public.recruits_v2 WHERE id = 'a2000000-0000-4000-8000-000000000040' AND pipeline_changed_by_staff_id IS NULL) THEN
-    UPDATE public.recruits_v2 SET pipeline_stage = 'identified', pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000001' WHERE id = 'a2000000-0000-4000-8000-000000000040';
-    UPDATE public.recruits_v2 SET pipeline_stage = 'to_be_confirmed',
+IF EXISTS (SELECT 1 FROM public.recruits WHERE id = 'a2000000-0000-4000-8000-000000000040' AND pipeline_changed_by_staff_id IS NULL) THEN
+    UPDATE public.recruits SET pipeline_stage = 'identified', pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000001' WHERE id = 'a2000000-0000-4000-8000-000000000040';
+    UPDATE public.recruits SET pipeline_stage = 'to_be_confirmed',
         usna_offer_date = NULL,
         usna_offered_by_staff_id = NULL,
         pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000001' WHERE id = 'a2000000-0000-4000-8000-000000000040';
@@ -405,9 +405,9 @@ END IF;
 END $$;
 
 DO $$ BEGIN
-IF EXISTS (SELECT 1 FROM public.recruits_v2 WHERE id = 'a2000000-0000-4000-8000-000000000041' AND pipeline_changed_by_staff_id IS NULL) THEN
-    UPDATE public.recruits_v2 SET pipeline_stage = 'identified', pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000002' WHERE id = 'a2000000-0000-4000-8000-000000000041';
-    UPDATE public.recruits_v2 SET pipeline_stage = 'identified',
+IF EXISTS (SELECT 1 FROM public.recruits WHERE id = 'a2000000-0000-4000-8000-000000000041' AND pipeline_changed_by_staff_id IS NULL) THEN
+    UPDATE public.recruits SET pipeline_stage = 'identified', pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000002' WHERE id = 'a2000000-0000-4000-8000-000000000041';
+    UPDATE public.recruits SET pipeline_stage = 'identified',
         usna_offer_date = NULL,
         usna_offered_by_staff_id = NULL,
         pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000002' WHERE id = 'a2000000-0000-4000-8000-000000000041';
@@ -415,9 +415,9 @@ END IF;
 END $$;
 
 DO $$ BEGIN
-IF EXISTS (SELECT 1 FROM public.recruits_v2 WHERE id = 'a2000000-0000-4000-8000-000000000042' AND pipeline_changed_by_staff_id IS NULL) THEN
-    UPDATE public.recruits_v2 SET pipeline_stage = 'identified', pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000003' WHERE id = 'a2000000-0000-4000-8000-000000000042';
-    UPDATE public.recruits_v2 SET pipeline_stage = 'evaluating',
+IF EXISTS (SELECT 1 FROM public.recruits WHERE id = 'a2000000-0000-4000-8000-000000000042' AND pipeline_changed_by_staff_id IS NULL) THEN
+    UPDATE public.recruits SET pipeline_stage = 'identified', pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000003' WHERE id = 'a2000000-0000-4000-8000-000000000042';
+    UPDATE public.recruits SET pipeline_stage = 'evaluating',
         usna_offer_date = NULL,
         usna_offered_by_staff_id = NULL,
         pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000003' WHERE id = 'a2000000-0000-4000-8000-000000000042';
@@ -425,9 +425,9 @@ END IF;
 END $$;
 
 DO $$ BEGIN
-IF EXISTS (SELECT 1 FROM public.recruits_v2 WHERE id = 'a2000000-0000-4000-8000-000000000043' AND pipeline_changed_by_staff_id IS NULL) THEN
-    UPDATE public.recruits_v2 SET pipeline_stage = 'identified', pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000001' WHERE id = 'a2000000-0000-4000-8000-000000000043';
-    UPDATE public.recruits_v2 SET pipeline_stage = 'priority',
+IF EXISTS (SELECT 1 FROM public.recruits WHERE id = 'a2000000-0000-4000-8000-000000000043' AND pipeline_changed_by_staff_id IS NULL) THEN
+    UPDATE public.recruits SET pipeline_stage = 'identified', pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000001' WHERE id = 'a2000000-0000-4000-8000-000000000043';
+    UPDATE public.recruits SET pipeline_stage = 'priority',
         usna_offer_date = NULL,
         usna_offered_by_staff_id = NULL,
         pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000001' WHERE id = 'a2000000-0000-4000-8000-000000000043';
@@ -435,9 +435,9 @@ END IF;
 END $$;
 
 DO $$ BEGIN
-IF EXISTS (SELECT 1 FROM public.recruits_v2 WHERE id = 'a2000000-0000-4000-8000-000000000044' AND pipeline_changed_by_staff_id IS NULL) THEN
-    UPDATE public.recruits_v2 SET pipeline_stage = 'identified', pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000002' WHERE id = 'a2000000-0000-4000-8000-000000000044';
-    UPDATE public.recruits_v2 SET pipeline_stage = 'offered',
+IF EXISTS (SELECT 1 FROM public.recruits WHERE id = 'a2000000-0000-4000-8000-000000000044' AND pipeline_changed_by_staff_id IS NULL) THEN
+    UPDATE public.recruits SET pipeline_stage = 'identified', pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000002' WHERE id = 'a2000000-0000-4000-8000-000000000044';
+    UPDATE public.recruits SET pipeline_stage = 'offered',
         usna_offer_date = '2026-10-24',
         usna_offered_by_staff_id = 'b2000000-0000-4000-8000-000000000002',
         pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000002' WHERE id = 'a2000000-0000-4000-8000-000000000044';
@@ -445,9 +445,9 @@ END IF;
 END $$;
 
 DO $$ BEGIN
-IF EXISTS (SELECT 1 FROM public.recruits_v2 WHERE id = 'a2000000-0000-4000-8000-000000000045' AND pipeline_changed_by_staff_id IS NULL) THEN
-    UPDATE public.recruits_v2 SET pipeline_stage = 'identified', pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000003' WHERE id = 'a2000000-0000-4000-8000-000000000045';
-    UPDATE public.recruits_v2 SET pipeline_stage = 'committed_to_usna',
+IF EXISTS (SELECT 1 FROM public.recruits WHERE id = 'a2000000-0000-4000-8000-000000000045' AND pipeline_changed_by_staff_id IS NULL) THEN
+    UPDATE public.recruits SET pipeline_stage = 'identified', pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000003' WHERE id = 'a2000000-0000-4000-8000-000000000045';
+    UPDATE public.recruits SET pipeline_stage = 'committed_to_usna',
         usna_offer_date = '2026-10-10',
         usna_offered_by_staff_id = 'b2000000-0000-4000-8000-000000000003',
         pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000003' WHERE id = 'a2000000-0000-4000-8000-000000000045';
@@ -455,9 +455,9 @@ END IF;
 END $$;
 
 DO $$ BEGIN
-IF EXISTS (SELECT 1 FROM public.recruits_v2 WHERE id = 'a2000000-0000-4000-8000-000000000046' AND pipeline_changed_by_staff_id IS NULL) THEN
-    UPDATE public.recruits_v2 SET pipeline_stage = 'identified', pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000001' WHERE id = 'a2000000-0000-4000-8000-000000000046';
-    UPDATE public.recruits_v2 SET pipeline_stage = 'committed_elsewhere',
+IF EXISTS (SELECT 1 FROM public.recruits WHERE id = 'a2000000-0000-4000-8000-000000000046' AND pipeline_changed_by_staff_id IS NULL) THEN
+    UPDATE public.recruits SET pipeline_stage = 'identified', pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000001' WHERE id = 'a2000000-0000-4000-8000-000000000046';
+    UPDATE public.recruits SET pipeline_stage = 'committed_elsewhere',
         usna_offer_date = NULL,
         usna_offered_by_staff_id = NULL,
         pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000001' WHERE id = 'a2000000-0000-4000-8000-000000000046';
@@ -465,9 +465,9 @@ END IF;
 END $$;
 
 DO $$ BEGIN
-IF EXISTS (SELECT 1 FROM public.recruits_v2 WHERE id = 'a2000000-0000-4000-8000-000000000047' AND pipeline_changed_by_staff_id IS NULL) THEN
-    UPDATE public.recruits_v2 SET pipeline_stage = 'identified', pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000002' WHERE id = 'a2000000-0000-4000-8000-000000000047';
-    UPDATE public.recruits_v2 SET pipeline_stage = 'not_pursuing',
+IF EXISTS (SELECT 1 FROM public.recruits WHERE id = 'a2000000-0000-4000-8000-000000000047' AND pipeline_changed_by_staff_id IS NULL) THEN
+    UPDATE public.recruits SET pipeline_stage = 'identified', pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000002' WHERE id = 'a2000000-0000-4000-8000-000000000047';
+    UPDATE public.recruits SET pipeline_stage = 'not_pursuing',
         usna_offer_date = NULL,
         usna_offered_by_staff_id = NULL,
         pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000002' WHERE id = 'a2000000-0000-4000-8000-000000000047';
@@ -475,9 +475,9 @@ END IF;
 END $$;
 
 DO $$ BEGIN
-IF EXISTS (SELECT 1 FROM public.recruits_v2 WHERE id = 'a2000000-0000-4000-8000-000000000048' AND pipeline_changed_by_staff_id IS NULL) THEN
-    UPDATE public.recruits_v2 SET pipeline_stage = 'identified', pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000003' WHERE id = 'a2000000-0000-4000-8000-000000000048';
-    UPDATE public.recruits_v2 SET pipeline_stage = 'to_be_confirmed',
+IF EXISTS (SELECT 1 FROM public.recruits WHERE id = 'a2000000-0000-4000-8000-000000000048' AND pipeline_changed_by_staff_id IS NULL) THEN
+    UPDATE public.recruits SET pipeline_stage = 'identified', pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000003' WHERE id = 'a2000000-0000-4000-8000-000000000048';
+    UPDATE public.recruits SET pipeline_stage = 'to_be_confirmed',
         usna_offer_date = NULL,
         usna_offered_by_staff_id = NULL,
         pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000003' WHERE id = 'a2000000-0000-4000-8000-000000000048';
@@ -485,9 +485,9 @@ END IF;
 END $$;
 
 DO $$ BEGIN
-IF EXISTS (SELECT 1 FROM public.recruits_v2 WHERE id = 'a2000000-0000-4000-8000-000000000049' AND pipeline_changed_by_staff_id IS NULL) THEN
-    UPDATE public.recruits_v2 SET pipeline_stage = 'identified', pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000001' WHERE id = 'a2000000-0000-4000-8000-000000000049';
-    UPDATE public.recruits_v2 SET pipeline_stage = 'identified',
+IF EXISTS (SELECT 1 FROM public.recruits WHERE id = 'a2000000-0000-4000-8000-000000000049' AND pipeline_changed_by_staff_id IS NULL) THEN
+    UPDATE public.recruits SET pipeline_stage = 'identified', pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000001' WHERE id = 'a2000000-0000-4000-8000-000000000049';
+    UPDATE public.recruits SET pipeline_stage = 'identified',
         usna_offer_date = NULL,
         usna_offered_by_staff_id = NULL,
         pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000001' WHERE id = 'a2000000-0000-4000-8000-000000000049';
@@ -495,16 +495,16 @@ END IF;
 END $$;
 
 DO $$ BEGIN
-IF EXISTS (SELECT 1 FROM public.recruits_v2 WHERE id = 'a2000000-0000-4000-8000-000000000050' AND pipeline_changed_by_staff_id IS NULL) THEN
-    UPDATE public.recruits_v2 SET pipeline_stage = 'identified', pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000002' WHERE id = 'a2000000-0000-4000-8000-000000000050';
-    UPDATE public.recruits_v2 SET pipeline_stage = 'evaluating',
+IF EXISTS (SELECT 1 FROM public.recruits WHERE id = 'a2000000-0000-4000-8000-000000000050' AND pipeline_changed_by_staff_id IS NULL) THEN
+    UPDATE public.recruits SET pipeline_stage = 'identified', pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000002' WHERE id = 'a2000000-0000-4000-8000-000000000050';
+    UPDATE public.recruits SET pipeline_stage = 'evaluating',
         usna_offer_date = NULL,
         usna_offered_by_staff_id = NULL,
         pipeline_changed_by_staff_id = 'b2000000-0000-4000-8000-000000000002' WHERE id = 'a2000000-0000-4000-8000-000000000050';
 END IF;
 END $$;
 
-INSERT INTO public.recruit_other_offers_v2 (id, recruit_id, school, date_learned, source, changed_by_staff_id) VALUES
+INSERT INTO public.recruit_other_offers (id, recruit_id, school, date_learned, source, changed_by_staff_id) VALUES
 
 ('e3000000-0000-4000-8000-000000000001', 'a2000000-0000-4000-8000-000000000001', 'Colgate University', '2026-10-02', 'Fictional email from guardian', 'b2000000-0000-4000-8000-000000000002'),
 ('e3000000-0000-4000-8000-000000000002', 'a2000000-0000-4000-8000-000000000002', 'Lehigh University', '2026-10-03', 'Fictional conversation with high school coach', 'b2000000-0000-4000-8000-000000000003'),
@@ -582,7 +582,7 @@ INSERT INTO public.recruit_other_offers_v2 (id, recruit_id, school, date_learned
 ('e3000000-0000-4000-8000-000000000074', 'a2000000-0000-4000-8000-000000000024', 'Lehigh University', '2026-10-19', 'Fictional conversation with high school coach', 'b2000000-0000-4000-8000-000000000003'),
 ('e3000000-0000-4000-8000-000000000075', 'a2000000-0000-4000-8000-000000000025', 'Lafayette College', '2026-10-20', 'Fictional call with player', 'b2000000-0000-4000-8000-000000000001') ON CONFLICT (id) DO NOTHING;
 
-INSERT INTO public.recruit_visits_v2 (id, recruit_id, visit_type, visit_date, status, details, changed_by_staff_id) VALUES
+INSERT INTO public.recruit_visits (id, recruit_id, visit_type, visit_date, status, details, changed_by_staff_id) VALUES
 
 ('f3000000-0000-4000-8000-000000000001', 'a2000000-0000-4000-8000-000000000001', 'unofficial', '2026-11-08', 'planned', 'Fictional visit: family meeting', 'b2000000-0000-4000-8000-000000000002'),
 ('f3000000-0000-4000-8000-000000000002', 'a2000000-0000-4000-8000-000000000002', 'campus_tour', '2026-10-03', 'completed', 'Fictional visit: academic interests discussion', 'b2000000-0000-4000-8000-000000000003'),

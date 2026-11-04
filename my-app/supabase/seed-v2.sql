@@ -4,14 +4,14 @@
 
 BEGIN;
 
-INSERT INTO public.staff_members_v2 (id, display_name, role) VALUES
+INSERT INTO public.staff_members (id, display_name, role) VALUES
 
 ('b2000000-0000-4000-8000-000000000001', 'Dana Mercer', 'admin'),
 ('b2000000-0000-4000-8000-000000000002', 'Robin Ellis', 'staff'),
 ('b2000000-0000-4000-8000-000000000003', 'Casey Rowan', 'staff')
 ON CONFLICT (id) DO NOTHING;
 
-INSERT INTO public.recruits_v2 (id, first_name, last_name, preferred_name, birthday, height_inches, weight_lbs, positions, jersey_number, high_school, graduation_year, gpa, gpa_scale, academic_information, city, state_country, club_team, circuit, age_group, recruit_email, recruit_phone, guardian_contacts, video_links, profile_links, medical_notes, recruiting_status, created_at, updated_at) VALUES
+INSERT INTO public.recruits (id, first_name, last_name, preferred_name, birthday, height_inches, weight_lbs, positions, jersey_number, high_school, graduation_year, gpa, gpa_scale, academic_information, city, state_country, club_team, circuit, age_group, recruit_email, recruit_phone, guardian_contacts, video_links, profile_links, medical_notes, recruiting_status, created_at, updated_at) VALUES
 
 ('a2000000-0000-4000-8000-000000000001', 'Avery', 'Reed', NULL, '2009-02-21', 71, 156, ARRAY['SG']::text[], '00', 'Harbor Ridge High School', 2027, 3.68, 4.0, 'Interested in computer science; taking honors English.', 'Annapolis', 'Maryland, USA', 'Piedmont Flight', 'Regional travel circuit', '17U', 'avery.reed@example.com', '202-555-0101', '[{"name": "Jamie Reed", "relationship": "Guardian", "email": "guardian.1@example.com", "phone": "202-555-0151"}]', ARRAY['https://example.com/videos/recruit-1']::text[], ARRAY['https://example.com/profiles/recruit-1']::text[], NULL, 'evaluating', '2026-09-02T00:00:00+00:00', '2026-09-02T00:00:00+00:00'),
 ('a2000000-0000-4000-8000-000000000002', 'Maya', 'Reyes', NULL, '2009-11-30', 68, 138, ARRAY['SF']::text[], '28', 'Cedar Valley High School', 2028, 2.98, 4.0, 'Interested in engineering; taking honors mathematics.', 'Richmond', 'Virginia, USA', 'Summit Hoops', 'Regional travel circuit', '17U', 'maya.reyes@example.com', '202-555-0102', '[{"name": "Pat Reyes", "relationship": "Guardian", "email": "guardian.2@example.com", "phone": "202-555-0152"}]', ARRAY['https://example.com/videos/recruit-2']::text[], ARRAY['https://example.com/profiles/recruit-2']::text[], 'Fictional sample: prior ankle sprain; follow-up pending.', 'evaluating', '2026-10-03T00:00:00+00:00', '2026-10-03T00:00:00+00:00'),
@@ -65,7 +65,7 @@ INSERT INTO public.recruits_v2 (id, first_name, last_name, preferred_name, birth
 ('a2000000-0000-4000-8000-000000000050', 'Hayden', 'Ellis', NULL, '2012-08-08', 79, 185, ARRAY['C']::text[], '34', 'Meadowbrook West High School', 2030, 3.83, 4.0, 'Interested in biology; participates in science club.', 'Knoxville', 'Tennessee, USA', 'Bay City Select', 'Regional travel circuit', '14U', 'hayden.ellis@example.com', '202-555-0150', '[{"name": "Jamie Ellis", "relationship": "Guardian", "email": "guardian.50@example.com", "phone": "202-555-0150"}]', ARRAY['https://example.com/videos/recruit-50']::text[], ARRAY['https://example.com/profiles/recruit-50']::text[], 'Fictional sample: health information not yet collected.', 'watching', '2026-10-02T00:00:00+00:00', '2026-10-02T00:00:00+00:00')
 ON CONFLICT (id) DO NOTHING;
 
-INSERT INTO public.recruit_notes_v2 (id, recruit_id, author_id, note_type, title, body, occurred_at, created_at, updated_at) VALUES
+INSERT INTO public.recruit_notes (id, recruit_id, author_id, note_type, title, body, occurred_at, created_at, updated_at) VALUES
 
 ('c2000000-0000-4000-8000-000000000001', 'a2000000-0000-4000-8000-000000000001', 'b2000000-0000-4000-8000-000000000002', 'evaluation', 'Fall scouting review', 'Runs the floor hard and sets solid screens; continue watching free throws.', '2026-09-05T11:00:00+00:00', '2026-09-05T13:00:00+00:00', '2026-09-05T13:00:00+00:00'),
 ('c2000000-0000-4000-8000-000000000002', 'a2000000-0000-4000-8000-000000000001', 'b2000000-0000-4000-8000-000000000003', 'interaction', 'Recruiting follow-up', 'Fictional email exchange: player plans to send updated game footage.', '2026-09-11T15:00:00+00:00', '2026-09-11T17:00:00+00:00', '2026-09-11T17:00:00+00:00'),

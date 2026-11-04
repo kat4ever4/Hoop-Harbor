@@ -3,7 +3,11 @@ import { Suspense, type ReactNode } from 'react'
 import { ArrowLeft, Pencil } from 'lucide-react'
 import { SiteNav } from '@/components/layout/site-nav'
 import { getAccess } from '@/lib/recruits/access'
-import { getRecruit } from '@/lib/recruits/queries'
+import { getRecruit, listRecruitNotes } from '@/lib/recruits/queries'
+import { listActiveStaff } from '@/lib/staff/queries'
+import type { StaffOption } from '@/lib/staff/types'
+import type { RecruitNote } from '@/lib/recruits/notes'
+import { NoteForm } from '../note-form'
 import { fullName, type Recruit } from '@/lib/recruits/fields'
 import { inchesToHeight } from '@/lib/format-height'
 import { AccessNotice } from '../access-notice'
@@ -39,7 +43,9 @@ function Links({ urls }: { urls: string[] }) {
 const when = (iso: string) =>
   new Date(iso).toLocaleString('en-US', { timeZone: 'America/New_York', dateStyle: 'medium', timeStyle: 'short' })
 
-function Profile({ r }: { r: Recruit }) {
+function Profile({ r, notes, staff, notesError, staffError }: {
+  r: Recruit; notes: RecruitNote[]; staff: StaffOption[]; notesError?: string; staffError?: string
+}) {
   return (
     <>
       <div className="mb-6 flex flex-col gap-4 rounded-2xl bg-gradient-to-br from-slate-800 to-indigo-900 p-6 text-white sm:flex-row sm:items-end sm:justify-between">
@@ -62,6 +68,7 @@ function Profile({ r }: { r: Recruit }) {
             <Row label="Graduation year" value={r.graduation_year} />
             <Row label="Position(s)" value={r.positions.join(', ')} />
             <Row label="Height" value={r.height_inches != null ? inchesToHeight(r.height_inches) : null} />
+            <Row label="Weight" value={r.weight_lbs != null ? `${r.weight_lbs} lb` : null} />
             <Row label="Jersey #" value={r.jersey_number} />
             <Row label="High school" value={r.high_school} />
             <Row label="Hometown" value={[r.city, r.state_country].filter(Boolean).join(', ')} />
@@ -88,12 +95,27 @@ function Profile({ r }: { r: Recruit }) {
             <Row label="Video" value={<Links urls={r.video_links} />} />
             <Row label="Profiles" value={<Links urls={r.profile_links} />} />
             <Row label="Academics" value={r.academic_information} />
+            <Row label="GPA" value={r.gpa != null ? `${r.gpa} / ${r.gpa_scale}` : null} />
           </dl>
-          {r.extra_notes && <p className="mt-3 whitespace-pre-wrap rounded-lg bg-slate-50 p-3 text-sm">{r.extra_notes}</p>}
+          {r.medical_notes && <div className="mt-3 rounded-lg bg-slate-50 p-3 text-sm">
+            <h3 className="font-semibold">Medical notes</h3>
+            <p className="whitespace-pre-wrap">{r.medical_notes}</p>
+          </div>}
         </Card>
 
-        <Card title="Evaluation notes & status">
-          <p className="text-sm text-slate-500">Evaluation notes, offers, and visits arrive in Sprint 2.</p>
+        <Card title="Recruit notes">
+          {notesError ? <p role="alert" className="text-sm text-red-700">Could not load notes. Please try again.</p>
+            : notes.length === 0 ? <p className="text-sm text-slate-500">No notes yet.</p>
+            : <ol className="flex flex-col gap-4">
+              {notes.map((note) => <li key={note.id} className="rounded-lg bg-slate-50 p-3 text-sm">
+                <p className="font-semibold">{note.author?.display_name ?? 'Unknown staff'} · {note.note_type}</p>
+                <p className="text-xs text-slate-500">{when(note.occurred_at)}</p>
+                {note.title && <h3 className="mt-2 font-semibold">{note.title}</h3>}
+                <p className="mt-2 whitespace-pre-wrap [overflow-wrap:anywhere]">{note.body}</p>
+              </li>)}
+            </ol>}
+          {staffError ? <p role="alert" className="mt-4 text-sm text-red-700">Could not load staff names. Please try again.</p>
+            : <NoteForm recruitId={r.id} staff={staff} />}
         </Card>
       </div>
     </>
@@ -103,10 +125,14 @@ function Profile({ r }: { r: Recruit }) {
 async function ProfileContent({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
   const [access, recruit] = await Promise.all([getAccess(), getRecruit(id)])
+  const [noteResult, staffResult] = recruit
+    ? await Promise.all([listRecruitNotes(id), listActiveStaff()])
+    : [{ notes: [] }, { staff: [] }]
   return (
     <>
       <AccessNotice access={access} />
-      {recruit ? <Profile r={recruit} /> : <RecruitNotFound />}
+      {recruit ? <Profile r={recruit} notes={noteResult.notes} staff={staffResult.staff}
+        notesError={noteResult.error} staffError={staffResult.error} /> : <RecruitNotFound />}
     </>
   )
 }

@@ -59,8 +59,10 @@ describe('createRecruit', () => {
   })
 
   it('saves and opens the new profile', async () => {
-    await expect(createRecruit({}, fd(base))).rejects.toThrow('REDIRECT:/recruits/new-id')
+    await expect(createRecruit({}, fd({ ...base, medical_notes: 'Sample health information', extra_notes: 'Legacy field' }))).rejects.toThrow('REDIRECT:/recruits/new-id')
     expect(db.inserts[0].height_inches).toBe(70)
+    expect(db.inserts[0].medical_notes).toBe('Sample health information')
+    expect(db.inserts[0]).not.toHaveProperty('extra_notes')
   })
 })
 
