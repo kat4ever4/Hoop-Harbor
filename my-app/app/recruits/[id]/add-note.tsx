@@ -33,7 +33,7 @@ export function AddNote({ recruitId, staff, pickAuthor, addNote, onSaved }: Prop
     setOpen(true)
     requestAnimationFrame(() => {
       textRef.current?.focus()
-      textRef.current?.scrollIntoView({ block: 'center', behavior: 'smooth' })
+      textRef.current?.scrollIntoView?.({ block: 'center', behavior: 'smooth' })
     })
   }
 
