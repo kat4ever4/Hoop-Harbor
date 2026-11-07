@@ -5,12 +5,16 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { parseRecruitForm, type FieldErrors } from '@/lib/recruits/validate'
 import { changedFields, FIELD_LABELS, pickEditable, type RecruitValues } from '@/lib/recruits/fields'
+import type { DuplicateMatch } from '@/lib/recruits/duplicates'
+import { findPossibleDuplicates } from '@/lib/recruits/duplicates-query'
 
 export type FormState = {
   errors?: FieldErrors
   formError?: string
   /** Someone else saved this recruit after the form was opened. */
   conflict?: { updatedAt: string; theirChanges: string[]; yourChanges: string[] }
+    /** F4: recruits that may be the same player. Nothing was saved yet. */
+  duplicates?: DuplicateMatch[]
 }
 
 function friendlyDbError(error: { code?: string; message: string }): string {
@@ -24,6 +28,13 @@ export async function createRecruit(_prev: FormState, formData: FormData): Promi
   if (Object.keys(errors).length > 0) return { errors } // nothing is saved
 
   const supabase = await createClient()
+
+  // F4: warn about a possible duplicate first, unless the coach chose "Create anyway".
+  if (formData.get('intent') !== 'force') {
+    const duplicates = await findPossibleDuplicates(supabase, values)
+    if (duplicates.length > 0) return { duplicates }
+  }
+
   const { data, error } = await supabase.from('recruits').insert(values).select('id').single()
   if (error) return { formError: friendlyDbError(error) }
 
