@@ -30,7 +30,7 @@ export function DuplicateDialog({ matches, pending, onClose }: Props) {
       ref={ref}
       onClose={onClose}
       aria-labelledby="duplicate-title"
-      className="w-[min(32rem,calc(100vw-2rem))] rounded-xl border border-slate-200 bg-white p-0 text-slate-900 shadow-xl [color-scheme:light] backdrop:bg-slate-900/50"
+      className="m-auto w-[min(32rem,calc(100vw-2rem))] rounded-xl border border-slate-200 bg-white p-0 text-slate-900 shadow-xl [color-scheme:light] backdrop:bg-slate-900/50"
     >
       <div className="space-y-4 p-5">
         <h2 id="duplicate-title" className="text-lg font-semibold">This recruit may already exist</h2>
