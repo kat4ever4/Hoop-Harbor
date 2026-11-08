@@ -1,13 +1,12 @@
 # Hoop Harbor
 
-A shared recruiting database for a college coaching staff, built as a USNA capstone for the Navy women's basketball program. Coaches keep one current record per recruit instead of several Google Sheets, from a phone or a desktop.
-
-Built with Next.js (TypeScript, React, Tailwind, shadcn/ui), Supabase (PostgreSQL, Auth, Row Level Security), and Vercel. It installs on phones as a Progressive Web App.
+Hoop Harbor is a central recruiting platform for college coaches, built as a USNA capstone for the Navy women's basketball program. Coaches can organize player profiles, contact details, academic information, and recruiting notes in one shared database from a phone or desktop. The app uses Next.js, TypeScript, React, Tailwind, shadcn/ui, and Supabase for its database and authentication, with hosting on Vercel and support for installation as a Progressive Web App.
 
 ## Project layout
 
 ```
 .github/workflows/ci.yml   CI: lint, types, unit tests, build, Playwright
+docs/setup.md             installation, environment variables, and troubleshooting
 my-app/                    the Next.js application
   app/                     pages (folder = URL), e.g. app/recruits/page.tsx -> /recruits
     recruits/              F1: list, new, profile ([id]), edit ([id]/edit), save logic (actions.ts)
@@ -33,15 +32,23 @@ my-app/                    the Next.js application
 
 ## Quick start
 
-Requires Node.js 22 and Docker (for local Supabase).
+Requires Node.js 22, npm, and a running Docker engine. From a local checkout, run these five commands. **After Supabase starts, pause before the last command:** edit `my-app/.env.local` with the local API URL and publishable (or anon) key printed by Supabase.
 
-```
+```bash
 cd my-app
-npm install
-cp .env.example .env.local      # then fill in the Supabase URL and key
-npx supabase start              # local database; prints the URL and key
-npm run dev                     # http://localhost:3000
+npm ci
+cp .env.example .env.local
+npx supabase start
+npm run dev
 ```
+
+Open http://localhost:3000. Sign up and grant your account staff access using the setup guide to see recruits.
+
+## Documentation
+
+- [Full installation and environment setup](docs/setup.md)
+- [Account access and sample recruits](docs/setup.md#account-access-and-sample-recruits)
+- [Common setup errors](docs/setup.md#common-errors)
 
 ### Seeing recruits (read this if the list is empty)
 
