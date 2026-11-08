@@ -46,6 +46,7 @@ Open http://localhost:3000. Sign up and grant your account staff access using th
 
 ## Documentation
 
+- [New recruiting tables and fictional sample data](docs/database-v2.md)
 - [Full installation and environment setup](docs/setup.md)
 - [Account access and sample recruits](docs/setup.md#account-access-and-sample-recruits)
 - [Common setup errors](docs/setup.md#common-errors)
