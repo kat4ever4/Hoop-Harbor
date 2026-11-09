@@ -120,8 +120,8 @@ beforeEach(() => {
   mocks.from.mockImplementation((table: string) => {
     if (table === "recruit_visits") return visits;
     if (table === "recruit_other_offers") return offers;
-    if (table === "school_aliases_v2") return aliases;
-    if (table === "schools_v2") return schools;
+    if (table === "school_aliases") return aliases;
+    if (table === "schools") return schools;
 
     throw new Error(`Unexpected table: ${table}`);
   });

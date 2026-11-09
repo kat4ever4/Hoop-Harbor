@@ -2,7 +2,6 @@
 
 import { useRef, useState, useTransition } from 'react'
 import { StaffPicker } from '@/components/staff-picker'
-import { StarRating } from '@/components/star-rating'
 import { inputClass } from '@/lib/form-styles'
 import { newRequestId } from '@/lib/notes/request-id'
 import type { Note, NoteResult } from '@/lib/notes/types'
@@ -19,7 +18,6 @@ type Props = {
 export function AddNote({ recruitId, staff, pickAuthor, addNote, onSaved }: Props) {
   const [open, setOpen] = useState(false)
   const [body, setBody] = useState('')
-  const [rating, setRating] = useState<number | null>(null)
   const [staffId, setStaffId] = useState('')
   const [failed, setFailed] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -39,7 +37,6 @@ export function AddNote({ recruitId, staff, pickAuthor, addNote, onSaved }: Prop
 
   function reset() {
     setBody('')
-    setRating(null)
     setFailed(false)
     setError(null)
     requestId.current = null                      // next draft gets a new receipt
@@ -52,7 +49,6 @@ export function AddNote({ recruitId, staff, pickAuthor, addNote, onSaved }: Prop
     fd.set('recruit_id', recruitId)
     if (pickAuthor) fd.set('author_id', staffId)
     fd.set('body', body.trim())
-    if (rating) fd.set('rating', String(rating))
     fd.set('client_request_id', requestId.current)
 
     setFailed(false)
@@ -83,7 +79,6 @@ export function AddNote({ recruitId, staff, pickAuthor, addNote, onSaved }: Prop
             placeholder="What did you see?"
             className={inputClass}
           />
-          <StarRating value={rating} onChange={setRating} />
           {pickAuthor && <StaffPicker staff={staff} name="author_id" value={staffId} onChange={setStaffId} />}
 
           {failed && (

@@ -312,7 +312,7 @@ async function resolveSchool(
   schoolName: string
 ): Promise<SchoolResult> {
   const { data: alias, error: aliasError } = await supabase
-    .from("school_aliases_v2")
+    .from("school_aliases")
     .select("school_id")
     .eq("normalized_alias", schoolName.trim().toLowerCase())
     .maybeSingle();
@@ -328,7 +328,7 @@ async function resolveSchool(
   }
 
   const { data: school, error: schoolError } = await supabase
-    .from("schools_v2")
+    .from("schools")
     .select("id, name")
     .eq("id", alias.school_id)
     .maybeSingle();

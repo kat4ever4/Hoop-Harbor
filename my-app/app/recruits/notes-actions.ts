@@ -6,7 +6,6 @@ import { createClient } from "@/lib/supabase/server";
 import {
   asNote,
   NOTE_COLUMNS,
-  ratingToTitle,
   type NoteRow,
 } from "@/lib/notes/real-mapping";
 import type { NoteResult } from "@/lib/notes/types";
@@ -15,26 +14,6 @@ const UUID =
   /^[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}$/i;
 
 type Client = Awaited<ReturnType<typeof createClient>>;
-
-function getRating(
-  fd: FormData
-):
-  | { rating: number | null; error?: never }
-  | { rating?: never; error: string } {
-  const value = String(fd.get("rating") ?? "").trim();
-
-  if (!value) return { rating: null };
-
-  const n = Number(value);
-
-  if (!Number.isInteger(n) || n < 1 || n > 5) {
-    return {
-      error: "Rating must be a whole number between 1 and 5.",
-    };
-  }
-
-  return { rating: n };
-}
 
 // Get the authenticated and active staff member.
 async function activeStaff(): Promise<{
@@ -51,7 +30,7 @@ async function activeStaff(): Promise<{
   if (authError || !user) return null;
 
   const { data: staffId, error } =
-    await client.rpc("current_staff_v2_id");
+    await client.rpc("current_staff_id");
 
   if (
     error ||
@@ -70,7 +49,7 @@ async function displayNote(
   row: NoteRow
 ) {
   const { data: staff } = await client
-    .from("staff_members_v2")
+    .from("staff_members")
     .select("display_name")
     .eq("id", row.author_id)
     .maybeSingle();
@@ -82,7 +61,7 @@ async function displayNote(
 }
 
 function refreshNotePages(recruitId: string) {
-  revalidatePath(`/recruits-v2/${recruitId}/notes`);
+  revalidatePath(`/recruits/${recruitId}/notes`);
   revalidatePath(`/recruits/${recruitId}`);
 }
 
@@ -90,14 +69,13 @@ function matchesSavedRequest(
   existing: NoteRow,
   recruitId: string,
   staffId: string,
-  body: string,
-  title: string | null
+  body: string
 ) {
   return (
     existing.recruit_id === recruitId &&
     existing.author_id === staffId &&
     existing.body === body &&
-    existing.title === title
+    existing.note_type === "evaluation"
   );
 }
 
@@ -121,7 +99,6 @@ export async function addNote(
   ).trim();
 
   const body = String(fd.get("body") ?? "").trim();
-  const parsed = getRating(fd);
 
   // Validate recruit ID.
   if (!UUID.test(recruitId)) {
@@ -154,13 +131,6 @@ export async function addNote(
     };
   }
 
-  if (parsed.error) {
-    return {
-      ok: false,
-      formError: parsed.error,
-    };
-  }
-
   // Require an authenticated staff member.
   const session = await activeStaff();
 
@@ -184,20 +154,15 @@ export async function addNote(
     };
   }
 
-  const title = ratingToTitle(
-    parsed.rating ?? null
-  );
-
-  // Save to the existing recruit_notes_v2 table.
+  // Save to the existing recruit_notes table.
   const { data, error } = await client
-    .from("recruit_notes_v2")
+    .from("recruit_notes")
     .insert({
-      id: requestId,
+      client_request_id: requestId,
       recruit_id: recruitId,
       author_id: staffId,
       note_type: "evaluation",
       body,
-      title,
     })
     .select(NOTE_COLUMNS)
     .single();
@@ -223,9 +188,9 @@ export async function addNote(
       data: existing,
       error: lookupError,
     } = await client
-      .from("recruit_notes_v2")
+      .from("recruit_notes")
       .select(NOTE_COLUMNS)
-      .eq("id", requestId)
+      .eq("client_request_id", requestId)
       .maybeSingle();
 
     if (lookupError || !existing) {
@@ -241,8 +206,7 @@ export async function addNote(
         existing as NoteRow,
         recruitId,
         staffId,
-        body,
-        title
+        body
       )
     ) {
       return {
@@ -277,7 +241,6 @@ export async function updateNote(
 ): Promise<NoteResult> {
   const id = String(fd.get("id") ?? "");
   const body = String(fd.get("body") ?? "").trim();
-  const parsed = getRating(fd);
 
   if (!UUID.test(id)) {
     return {
@@ -300,13 +263,6 @@ export async function updateNote(
     };
   }
 
-  if (parsed.error) {
-    return {
-      ok: false,
-      formError: parsed.error,
-    };
-  }
-
   const session = await activeStaff();
 
   if (!session) {
@@ -320,13 +276,8 @@ export async function updateNote(
 
   // RLS allows the author or an admin to edit.
   const { data, error } = await client
-    .from("recruit_notes_v2")
-    .update({
-      body,
-      title: ratingToTitle(
-        parsed.rating ?? null
-      ),
-    })
+    .from("recruit_notes")
+    .update({ body })
     .eq("id", id)
     .select(NOTE_COLUMNS)
     .maybeSingle();

@@ -47,13 +47,13 @@ export default async function RecruitV2NotesPage({
   }
 
   const { data: staffId, error: staffError } =
-    await client.rpc("current_staff_v2_id");
+    await client.rpc("current_staff_id");
 
   if (staffError || !staffId) {
     return (
       <main className="p-6">
         Your login is not linked to an active
-        staff_members_v2 record.
+        staff_members record.
       </main>
     );
   }
@@ -61,13 +61,13 @@ export default async function RecruitV2NotesPage({
   const [recruitResult, notesResult, staffResult] =
     await Promise.all([
       client
-        .from("recruits_v2")
+        .from("recruits")
         .select("first_name,last_name")
         .eq("id", id)
         .maybeSingle(),
 
       client
-        .from("recruit_notes_v2")
+        .from("recruit_notes")
         .select(NOTE_COLUMNS)
         .eq("recruit_id", id)
         .order("occurred_at", {
@@ -75,7 +75,7 @@ export default async function RecruitV2NotesPage({
         }),
 
       client
-        .from("staff_members_v2")
+        .from("staff_members")
         .select("id,display_name,role")
         .eq("is_active", true),
     ]);
@@ -133,7 +133,7 @@ export default async function RecruitV2NotesPage({
 
       <p className="text-sm text-slate-600">
         Notes are saved in the existing
-        recruit_notes_v2 database table.
+        recruit_notes database table.
       </p>
 
       <NotesClient

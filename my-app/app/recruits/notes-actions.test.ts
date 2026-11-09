@@ -42,12 +42,16 @@ const STAFF =
 const RECEIPT =
   "11111111-2222-4333-8444-555555555555";
 
+const NOTE_ID =
+  "22222222-2222-4333-8444-555555555555";
+
 const row = {
-  id: RECEIPT,
+  id: NOTE_ID,
+  client_request_id: RECEIPT,
+  note_type: "evaluation",
   recruit_id: RECRUIT,
   author_id: STAFF,
   body: "Strong on-ball defense",
-  title: "Rating: 4/5",
   occurred_at: "2026-11-08T18:00:00Z",
   created_at: "2026-11-08T18:00:00Z",
   updated_at: "2026-11-08T18:00:00Z",
@@ -62,7 +66,6 @@ function form(
     recruit_id: RECRUIT,
     client_request_id: RECEIPT,
     body: "Strong on-ball defense",
-    rating: "4",
     ...fields,
   }).forEach(([key, value]) => {
     fd.set(key, value);
@@ -106,11 +109,11 @@ beforeEach(() => {
   });
 
   mocks.from.mockImplementation((table: string) => {
-    if (table === "recruit_notes_v2") {
+    if (table === "recruit_notes") {
       return notes;
     }
 
-    if (table === "staff_members_v2") {
+    if (table === "staff_members") {
       return staff;
     }
 
@@ -136,31 +139,29 @@ beforeEach(() => {
 });
 
 describe("Real evaluation note server actions", () => {
-  it("creates a note using the request UUID", async () => {
+  it("creates a note with a separate request UUID", async () => {
     const result = await addNote(form());
 
     expect(result).toMatchObject({
       ok: true,
       note: {
-        id: RECEIPT,
-        rating: 4,
+        id: NOTE_ID,
         author_name: "Dana Mercer",
       },
     });
 
     expect(notes.insert).toHaveBeenCalledWith({
-      id: RECEIPT,
+      client_request_id: RECEIPT,
       recruit_id: RECRUIT,
       author_id: STAFF,
       note_type: "evaluation",
       body: "Strong on-ball defense",
-      title: "Rating: 4/5",
     });
 
     expect(
       mocks.revalidatePath
     ).toHaveBeenCalledWith(
-      `/recruits-v2/${RECRUIT}/notes`
+      `/recruits/${RECRUIT}/notes`
     );
   });
 
@@ -177,12 +178,12 @@ describe("Real evaluation note server actions", () => {
     expect(result).toMatchObject({
       ok: true,
       note: {
-        id: RECEIPT,
+        id: NOTE_ID,
       },
     });
 
     expect(notes.eq).toHaveBeenCalledWith(
-      "id",
+      "client_request_id",
       RECEIPT
     );
 
@@ -247,18 +248,13 @@ describe("Real evaluation note server actions", () => {
     ).not.toHaveBeenCalled();
   });
 
-  it("rejects an invalid rating", async () => {
+  it("rejects notes longer than 10000 characters", async () => {
     const result = await addNote(
-      form({
-        rating: "9",
-      })
+      form({ body: "X".repeat(10001) })
     );
 
     expect(result.ok).toBe(false);
-
-    expect(
-      notes.insert
-    ).not.toHaveBeenCalled();
+    expect(notes.insert).not.toHaveBeenCalled();
   });
 
   it("blocks signed-out users", async () => {
@@ -311,28 +307,25 @@ describe("Real evaluation note server actions", () => {
   it("updates an existing note", async () => {
     const fd = new FormData();
 
-    fd.set("id", RECEIPT);
+    fd.set("id", NOTE_ID);
     fd.set("body", "Strong on-ball defense");
-    fd.set("rating", "4");
 
     const result = await updateNote(fd);
 
     expect(result).toMatchObject({
       ok: true,
       note: {
-        id: RECEIPT,
-        rating: 4,
+        id: NOTE_ID,
       },
     });
 
     expect(notes.update).toHaveBeenCalledWith({
       body: "Strong on-ball defense",
-      title: "Rating: 4/5",
     });
 
     expect(notes.eq).toHaveBeenCalledWith(
       "id",
-      RECEIPT
+      NOTE_ID
     );
   });
 
@@ -344,7 +337,7 @@ describe("Real evaluation note server actions", () => {
 
     const fd = new FormData();
 
-    fd.set("id", RECEIPT);
+    fd.set("id", NOTE_ID);
     fd.set("body", "Edited text");
 
     const result = await updateNote(fd);
