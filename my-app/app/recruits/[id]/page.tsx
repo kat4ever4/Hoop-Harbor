@@ -46,9 +46,9 @@ const USE_MOCKS = true;
 
 function Profile({ r }: { r: Recruit }) {
 
-  let statusData: any = MOCK_RECRUIT_STATUS;
-  let staffData: any = MOCK_STAFF_OPTIONS;
-  let currentStatus = statusData?.status || 'to be confirmed'; //update with real data
+  const statusData = MOCK_RECRUIT_STATUS as Record<string, unknown>;
+  const staffData = MOCK_STAFF_OPTIONS;
+  const currentStatus = (statusData?.status as string) || 'to be confirmed'; //update with real data
 
   if (!USE_MOCKS) {
     // TODO(F3): Naman - Replace with actual Supabase queries when ready

@@ -6,7 +6,7 @@ import { Filter, Plus, Search, Star } from 'lucide-react'
 import type { RecruitListItem } from '@/lib/recruits/queries'
 import { StageBadge } from '@/components/stage-badge';
 import { getStatusColor } from '@/lib/status/colors';
-import { MOCK_RECRUIT_STATUS, MOCK_STAFF_OPTIONS } from '@/lib/status/mock'; //delete once real data available
+import { MOCK_RECRUIT_STATUS} from '@/lib/status/mock'; //delete once real data available
 
 const ALL = 'All'
 const selectClass =
@@ -29,25 +29,14 @@ function StarsPlaceholder() {
   )
 }
 
-function StatusPlaceholder() {
-  return (
-    <span
-      className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-400"
-      title="Recruiting status arrives in Sprint 2 (F3)"
-    >
-      —
-    </span>
-  )
-}
-
 export function RecruitTable({ recruits }: { recruits: RecruitListItem[] }) {
   const [search, setSearch] = useState('')
   const [year, setYear] = useState(ALL)
   const [position, setPosition] = useState(ALL)
 
   //replace with real data once available
-  let statusData: any = MOCK_RECRUIT_STATUS;
-  const currentStatus = statusData?.status_name || 'to be confirmed';
+  const statusData = MOCK_RECRUIT_STATUS as Record<string, unknown>;
+  const currentStatus = (statusData?.status_name as string) || 'to be confirmed';
 
   const filtered = useMemo(() => {
     const term = search.trim().toLowerCase()
@@ -119,7 +108,8 @@ export function RecruitTable({ recruits }: { recruits: RecruitListItem[] }) {
                       {[r.graduation_year, r.positions.join('/'), r.high_school].filter(Boolean).join(' · ')}
                     </div>
                   </div>
-                  <StageBadge stage={(r as any).pipeline_stage} /> 
+                  {/* @ts-expect-error pipeline_stage arrives in F3 schema */}
+                  <StageBadge stage={r.pipeline_stage} /> 
                 </Link>
               </li>
             ))}
