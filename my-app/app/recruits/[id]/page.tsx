@@ -46,7 +46,7 @@ const USE_MOCKS = true;
 
 function Profile({ r }: { r: Recruit }) {
 
-  const statusData = MOCK_RECRUIT_STATUS as Record<string, unknown>;
+  const statusData = MOCK_RECRUIT_STATUS;
   const staffData = MOCK_STAFF_OPTIONS;
   const currentStatus = (statusData?.status as string) || 'to be confirmed'; //update with real data
 
