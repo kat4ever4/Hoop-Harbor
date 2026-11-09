@@ -46,15 +46,11 @@ const USE_MOCKS = true;
 
 function Profile({ r }: { r: Recruit }) {
 
-  let statusData;
-  let staffData;
-  let currentStatus;
+  let statusData: any = MOCK_RECRUIT_STATUS;
+  let staffData: any = MOCK_STAFF_OPTIONS;
+  let currentStatus = statusData?.status || 'to be confirmed'; //update with real data
 
-  if (USE_MOCKS) {
-    statusData = MOCK_RECRUIT_STATUS;
-    staffData = MOCK_STAFF_OPTIONS;
-    currentStatus = statusData?.status || 'to be confirmed';
-  } else {
+  if (!USE_MOCKS) {
     // TODO(F3): Naman - Replace with actual Supabase queries when ready
     // const { data } = await supabase.from('recruits_v2').select('...').eq('id', params.id);
     // statusData = data;

@@ -46,7 +46,7 @@ export function RecruitTable({ recruits }: { recruits: RecruitListItem[] }) {
   const [position, setPosition] = useState(ALL)
 
   //replace with real data once available
-  let statusData = MOCK_RECRUIT_STATUS;
+  let statusData: any = MOCK_RECRUIT_STATUS;
   const currentStatus = statusData?.status_name || 'to be confirmed';
 
   const filtered = useMemo(() => {
@@ -119,7 +119,7 @@ export function RecruitTable({ recruits }: { recruits: RecruitListItem[] }) {
                       {[r.graduation_year, r.positions.join('/'), r.high_school].filter(Boolean).join(' · ')}
                     </div>
                   </div>
-                  <StageBadge stage={r.pipeline_stage} /> 
+                  <StageBadge stage={(r as any).pipeline_stage} /> 
                 </Link>
               </li>
             ))}
