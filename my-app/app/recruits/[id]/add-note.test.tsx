@@ -2,6 +2,7 @@ import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { AddNote } from './add-note'
 import { MOCK_STAFF } from '@/lib/staff/mock'
+import userEvent from '@testing-library/user-event'
 
 const setup = (addNote = vi.fn()) =>
   render(<AddNote recruitId="r1" staff={MOCK_STAFF} pickAuthor addNote={addNote} onSaved={vi.fn()} />)
@@ -30,7 +31,9 @@ describe('AddNote', () => {
     expect(screen.getByLabelText('Note')).toHaveValue('Offline note')
 
     addNote.mockResolvedValueOnce({ ok: true, note: { id: 'n1' } })
-    fireEvent.click(screen.getByRole('button', { name: 'Retry' }))
+    //fireEvent.click(screen.getByRole('button', { name: 'Retry' }))
+    const retryBtn = screen.getByRole('button', { name: 'Retry' })
+    await userEvent.click(retryBtn)
     await waitFor(() => expect(addNote).toHaveBeenCalledTimes(2))
 
     const first = (addNote.mock.calls[0][0] as FormData).get('client_request_id')
