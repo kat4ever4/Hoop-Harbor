@@ -581,3 +581,107 @@ export async function updateOutsideOffer(
 
   return { success: true, id: data.id };
 }
+
+// ------------------------------
+// SAVE USNA OFFER
+// ------------------------------
+
+type UsnaOfferInput = {
+  recruitId: string;
+  staffId: string;
+  offerDate: string;
+};
+
+export async function saveUsnaOffer(
+  input: UsnaOfferInput
+): Promise<StageActionResult> {
+  // Validate recruit and staff IDs.
+  if (!validIds(input.recruitId, input.staffId)) {
+    return {
+      success: false,
+      error: "Invalid recruit or staff ID.",
+    };
+  }
+
+  // Validate offer date.
+  if (!validDate(input.offerDate)) {
+    return {
+      success: false,
+      error: "Invalid offer date (use YYYY-MM-DD).",
+    };
+  }
+
+  // Require an authenticated user.
+  const supabase = await signedInClient();
+
+  if (!supabase) {
+    return {
+      success: false,
+      error: "You must be signed in.",
+    };
+  }
+
+  // Require the signed-in user to be active staff.
+  const {
+    data: currentStaffId,
+    error: currentStaffError,
+  } = await supabase.rpc("current_staff_id");
+
+  if (currentStaffError || !currentStaffId) {
+    return {
+      success: false,
+      error: "You must be an active staff member.",
+    };
+  }
+
+  // Verify the selected offering coach is active.
+  const {
+    data: offeringStaff,
+    error: staffError,
+  } = await supabase
+    .from("staff_members")
+    .select("id")
+    .eq("id", input.staffId)
+    .eq("is_active", true)
+    .maybeSingle();
+
+  if (staffError || !offeringStaff) {
+    return {
+      success: false,
+      error: "Select a valid active staff member.",
+    };
+  }
+
+  // Update the USNA offer information.
+  // The existing database trigger records the change
+  // in recruit_pipeline_history atomically.
+  const { data, error } = await supabase
+    .from("recruits")
+    .update({
+      usna_offer_date: input.offerDate,
+      usna_offered_by_staff_id: input.staffId,
+      pipeline_changed_by_staff_id: input.staffId,
+    })
+    .eq("id", input.recruitId)
+    .select("id")
+    .maybeSingle();
+
+  if (error) {
+    return {
+      success: false,
+      error: "Could not save USNA offer.",
+    };
+  }
+
+  if (!data) {
+    return {
+      success: false,
+      error: "Recruit not found or access denied.",
+    };
+  }
+
+  // Refresh the recruit pages.
+  refreshRecruit(input.recruitId);
+
+  return { success: true };
+}
