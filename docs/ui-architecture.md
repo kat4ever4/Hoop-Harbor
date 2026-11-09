@@ -25,16 +25,16 @@
     └── <RecruitForm> (Client) -> Handles mutations & optimistic locking
 ```
 
-1. Server-Driven UI & Streaming (<Suspense>)
+1. Server-Driven UI & Streaming (`<Suspense>`)
 - We use React 19 / Next.js 15 streaming to prevent slow database queries from blocking the initial page load.
-- Pattern: The outer page (e.g., RecruitsPage) renders the <SiteNav> and a <Suspense> boundary immediately.
-- Execution: Data-fetching logic is isolated in an inner asynchronous component (e.g., <RecruitList> or <ProfileContent>).
+- Pattern: The outer page (e.g., RecruitsPage) renders the `<SiteNav>` and a `<Suspense>` boundary immediately.
+- Execution: Data-fetching logic is isolated in an inner asynchronous component (e.g., `<RecruitList>` or `<ProfileContent>`).
 - Rule: Never fetch data in the root page component. Always isolate it in a wrapped child component so the page shell renders instantly.
 
 2. Client-Side Interactivity Boundaries
 - We keep the 'use client' boundary as low in the tree as possible to maximize performance and SEO.
-- Tables & Forms: Components like <RecruitTable> and <RecruitForm> are Client Components because they require useState, useMemo, and DOM event handling.
-- Layouts & Text: The <Profile> detail view remains a Server Component because it merely displays text. We only drop into a Client Component for the <StatusSection>, which requires buttons and modals.
+- Tables & Forms: Components like `<RecruitTable>` and `<RecruitForm>` are Client Components because they require useState, useMemo, and DOM event handling.
+- Layouts & Text: The `<Profile>` detail view remains a Server Component because it merely displays text. We only drop into a Client Component for the `<StatusSection>`, which requires buttons and modals.
 
 3. Responsive Data Displays (Dual-Layout)
 - Data-heavy views adapt to screen sizes using CSS rather than JavaScript window listeners.
@@ -58,7 +58,7 @@
 - Utilizes customized `<Section>` and `<Field>` wrapper components to standardize spacing and label typography.
 - Handles `<DuplicateDialog>` to warn coaches if they are adding a recruit that already exists.
 
-`<StatusSection>
+`<StatusSection>`
 - Role: Manages the CRM pipeline (Stages, USNA Offers, Other Offers, Visits).Key Mechanics:
 - Deeply interactive. Uses localized state (e.g., isAddingUsnaOffer, isAddingVisit) to toggle inline editing and modal dialogs.
 - Validates that all required fields are populated before enabling the "Save" button.
