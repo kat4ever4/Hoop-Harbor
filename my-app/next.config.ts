@@ -6,8 +6,7 @@ const nextConfig: NextConfig = {
   // /roster is the old address of the list, kept so old links still work.
   async redirects() {
     return [
-      { source: "/", destination: "/recruits", permanent: false },
-      { source: "/roster", destination: "/recruits", permanent: false },
+      //{ source: "/roster", destination: "/recruits", permanent: false },
     ];
   },
 };

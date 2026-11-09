@@ -4,6 +4,9 @@ import Link from 'next/link'
 import { useMemo, useState } from 'react'
 import { Filter, Plus, Search, Star } from 'lucide-react'
 import type { RecruitListItem } from '@/lib/recruits/queries'
+import { StageBadge } from '@/components/stage-badge';
+import { getStatusColor } from '@/lib/status/colors';
+import { MOCK_RECRUIT_STATUS, MOCK_STAFF_OPTIONS } from '@/lib/status/mock'; //delete once real data available
 
 const ALL = 'All'
 const selectClass =
@@ -41,6 +44,10 @@ export function RecruitTable({ recruits }: { recruits: RecruitListItem[] }) {
   const [search, setSearch] = useState('')
   const [year, setYear] = useState(ALL)
   const [position, setPosition] = useState(ALL)
+
+  //replace with real data once available
+  let statusData = MOCK_RECRUIT_STATUS;
+  const currentStatus = statusData?.status_name || 'to be confirmed';
 
   const filtered = useMemo(() => {
     const term = search.trim().toLowerCase()
@@ -112,7 +119,7 @@ export function RecruitTable({ recruits }: { recruits: RecruitListItem[] }) {
                       {[r.graduation_year, r.positions.join('/'), r.high_school].filter(Boolean).join(' · ')}
                     </div>
                   </div>
-                  <StatusPlaceholder />
+                  <StageBadge stage={r.pipeline_stage} /> 
                 </Link>
               </li>
             ))}
@@ -145,7 +152,12 @@ export function RecruitTable({ recruits }: { recruits: RecruitListItem[] }) {
                     <td className="px-6 py-4 font-medium text-gray-600">{r.graduation_year}</td>
                     <td className="px-6 py-4 text-gray-500">{r.positions.join(', ')}</td>
                     <td className="px-6 py-4 text-gray-500">{r.high_school}</td>
-                    <td className="px-6 py-4"><StatusPlaceholder /></td>
+                    <td className="px-6 py-4">
+                      {/*Change with real data when available*/}
+                      <span className={`border rounded-full px-2.5 py-0.5 text-xs font-semibold shadow-sm ${getStatusColor(currentStatus)}`}>
+                        {currentStatus.toUpperCase()}
+                      </span>
+                    </td>
                   </tr>
                 ))}
               </tbody>

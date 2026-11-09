@@ -8,6 +8,9 @@ import { fullName, type Recruit } from '@/lib/recruits/fields'
 import { inchesToHeight } from '@/lib/format-height'
 import { AccessNotice } from '../access-notice'
 import { RecruitNotFound } from '../not-found-message'
+import { StatusSection } from './status-section';
+import { getStatusColor } from '@/lib/status/colors';
+import { MOCK_RECRUIT_STATUS, MOCK_STAFF_OPTIONS } from '@/lib/status/mock';
 
 function Card({ title, children }: { title: string; children: ReactNode }) {
   return (
@@ -39,12 +42,33 @@ function Links({ urls }: { urls: string[] }) {
 const when = (iso: string) =>
   new Date(iso).toLocaleString('en-US', { timeZone: 'America/New_York', dateStyle: 'medium', timeStyle: 'short' })
 
+const USE_MOCKS = true;
+
 function Profile({ r }: { r: Recruit }) {
+
+  let statusData;
+  let staffData;
+  let currentStatus;
+
+  if (USE_MOCKS) {
+    statusData = MOCK_RECRUIT_STATUS;
+    staffData = MOCK_STAFF_OPTIONS;
+    currentStatus = statusData?.status || 'to be confirmed';
+  } else {
+    // TODO(F3): Naman - Replace with actual Supabase queries when ready
+    // const { data } = await supabase.from('recruits_v2').select('...').eq('id', params.id);
+    // statusData = data;
+    // staffData = await fetchStaffMembers();
+  }
+
   return (
     <>
       <div className="mb-6 flex flex-col gap-4 rounded-2xl bg-gradient-to-br from-slate-800 to-indigo-900 p-6 text-white sm:flex-row sm:items-end sm:justify-between">
         <div>
           <h1 className="text-3xl font-extrabold tracking-tight">{fullName(r)}</h1>
+          <span className={`border rounded-full px-2.5 py-0.5 text-xs font-semibold shadow-sm ${getStatusColor(currentStatus)}`}>
+              {currentStatus.toUpperCase()}
+          </span>
           <p className="mt-1 text-indigo-100">
             {[r.graduation_year && `Class of ${r.graduation_year}`, r.positions.join(' / '), r.high_school].filter(Boolean).join(' · ')}
           </p>
@@ -83,6 +107,25 @@ function Profile({ r }: { r: Recruit }) {
           </dl>
         </Card>
 
+        <Card title="Status Notes">
+            <div>
+              <StatusSection
+                recruitId={r.id}
+                status={statusData}
+                staff={staffData}
+              />
+            </div>
+        </Card>
+
+        <Card title="Evaluation Notes">
+          <p className="text-sm text-slate-500">Evaluation notes</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              {/* Evaluation Notes Placeholders */}
+            </div>
+          </div>
+        </Card>
+        
         <Card title="Links & academics">
           <dl>
             <Row label="Video" value={<Links urls={r.video_links} />} />
@@ -90,10 +133,6 @@ function Profile({ r }: { r: Recruit }) {
             <Row label="Academics" value={r.academic_information} />
           </dl>
           {r.extra_notes && <p className="mt-3 whitespace-pre-wrap rounded-lg bg-slate-50 p-3 text-sm">{r.extra_notes}</p>}
-        </Card>
-
-        <Card title="Evaluation notes & status">
-          <p className="text-sm text-slate-500">Evaluation notes, offers, and visits arrive in Sprint 2.</p>
         </Card>
       </div>
     </>
