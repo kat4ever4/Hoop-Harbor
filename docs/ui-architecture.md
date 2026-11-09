@@ -38,27 +38,27 @@
 
 3. Responsive Data Displays (Dual-Layout)
 - Data-heavy views adapt to screen sizes using CSS rather than JavaScript window listeners.
-- Desktop (sm:block): Standard <table> elements with <thead/> and <tbody/>.
+- Desktop (sm:block): Standard `<table>` elements with `<thead/>` and `<tbody/>`.
 - Mobile (sm:hidden): Stacked UI cards optimized for vertical scrolling and touch targets.
-- Reference: See <RecruitTable> and the offers/visits tables in <StatusSection>.
+- Reference: See `<RecruitTable>` and the offers/visits tables in `<StatusSection>`.
 
 4. Advanced Form Handling & Concurrency
-- The <RecruitForm> uses useActionState to interface with Next.js Server Actions. It is built to handle multi-user collision (Optimistic Locking).
+- The `<RecruitForm>` uses useActionState to interface with Next.js Server Actions. It is built to handle multi-user collision (Optimistic Locking).
 - State Preservation: We use onSubmit with event.preventDefault() to manually dispatch the FormData. This ensures that if the server returns a validation error, the browser does not wipe the user's typed inputs.
 - Optimistic Locking: If two coaches edit a recruit simultaneously, the server returns a state.conflict. The UI surfaces a specific amber alert box allowing the user to merge their changes ("Save my changes too").
 
 ### Component Reference
-'<RecruitTable>'
+`<RecruitTable>`
 - Role: Displays the directory of recruits.Key Mechanics:
 - Uses useMemo for client-side filtering (Search, Grad Year, Position).
 - Renders a StarsPlaceholder and hardcoded status badges. (Note: These are awaiting F3 schema updates).
 
-'<RecruitForm>'
+`<RecruitForm>`
 - Role: Creates or updates a recruit profile.Key Mechanics:
-- Utilizes customized <Section> and <Field> wrapper components to standardize spacing and label typography.
-- Handles <DuplicateDialog> to warn coaches if they are adding a recruit that already exists.
+- Utilizes customized `<Section>` and `<Field>` wrapper components to standardize spacing and label typography.
+- Handles `<DuplicateDialog>` to warn coaches if they are adding a recruit that already exists.
 
-'<StatusSection>'
+`<StatusSection>
 - Role: Manages the CRM pipeline (Stages, USNA Offers, Other Offers, Visits).Key Mechanics:
 - Deeply interactive. Uses localized state (e.g., isAddingUsnaOffer, isAddingVisit) to toggle inline editing and modal dialogs.
 - Validates that all required fields are populated before enabling the "Save" button.
