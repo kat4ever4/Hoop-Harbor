@@ -118,8 +118,8 @@ beforeEach(() => {
   });
 
   mocks.from.mockImplementation((table: string) => {
-    if (table === "recruit_visits_v2") return visits;
-    if (table === "recruit_other_offers_v2") return offers;
+    if (table === "recruit_visits") return visits;
+    if (table === "recruit_other_offers") return offers;
     if (table === "school_aliases_v2") return aliases;
     if (table === "schools_v2") return schools;
 
@@ -132,7 +132,7 @@ beforeEach(() => {
 // ------------------------------
 
 describe("visit actions", () => {
-  it("creates a visit with the real v2 column names", async () => {
+  it("creates a visit with the final column names", async () => {
     const result = await createRecruitVisit(visit);
 
     expect(result).toEqual({

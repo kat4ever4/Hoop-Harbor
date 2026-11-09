@@ -207,7 +207,7 @@ export async function createRecruitVisit(
   }
 
   const { data, error } = await supabase
-    .from("recruit_visits_v2")
+    .from("recruit_visits")
     .insert({
       recruit_id: input.recruitId,
       visit_type: input.visitType,
@@ -261,7 +261,7 @@ export async function updateRecruitVisit(
   }
 
   const { data, error } = await supabase
-    .from("recruit_visits_v2")
+    .from("recruit_visits")
     .update({
       visit_type: input.visitType,
       visit_date: input.visitDate,
@@ -373,7 +373,7 @@ async function hasDuplicateOffer(
   excludeOfferId?: string
 ): Promise<{ duplicate: boolean; error: boolean }> {
   let query = supabase
-    .from("recruit_other_offers_v2")
+    .from("recruit_other_offers")
     .select("id")
     .eq("recruit_id", recruitId)
     .eq("school_id", schoolId)
@@ -446,7 +446,7 @@ export async function createOutsideOffer(
   }
 
   const { data, error } = await supabase
-    .from("recruit_other_offers_v2")
+    .from("recruit_other_offers")
     .insert({
       recruit_id: input.recruitId,
       school_id: school.id,
@@ -541,7 +541,7 @@ export async function updateOutsideOffer(
   }
 
   const { data, error } = await supabase
-    .from("recruit_other_offers_v2")
+    .from("recruit_other_offers")
     .update({
       school_id: school.id,
       school: school.name,
