@@ -5,6 +5,7 @@ const db = vi.hoisted(() => ({
   row: null as Record<string, unknown> | null,
   updates: [] as Record<string, unknown>[],
   inserts: [] as Record<string, unknown>[],
+  pool: [] as Record<string, unknown>[],
 }))
 
 vi.mock('next/cache', () => ({ revalidatePath: vi.fn() }))
@@ -18,7 +19,13 @@ vi.mock('@/lib/supabase/server', () => ({
         db.inserts.push(values)
         return { select: () => ({ single: async () => ({ data: { id: 'new-id' }, error: null }) }) }
       },
-      select: () => ({ eq: () => ({ maybeSingle: async () => ({ data: db.row, error: null }) }) }),
+            // .eq() can be awaited for a list (duplicate check) or end in .maybeSingle() (one recruit).
+      select: () => ({
+        eq: () =>
+          Object.assign(Promise.resolve({ data: db.pool, error: null }), {
+            maybeSingle: async () => ({ data: db.row, error: null }),
+          }),
+      }),
       update: (changes: Record<string, unknown>) => ({
         eq: () => ({
           select: async () => {
@@ -49,6 +56,7 @@ beforeEach(() => {
   db.row = { id: 'r1', ...original, updated_at: 'T1' }
   db.updates = []
   db.inserts = []
+  db.pool = []
 })
 
 describe('createRecruit', () => {
@@ -63,6 +71,19 @@ describe('createRecruit', () => {
     expect(db.inserts[0].height_inches).toBe(70)
     expect(db.inserts[0].medical_notes).toBe('Sample health information')
     expect(db.inserts[0]).not.toHaveProperty('extra_notes')
+  })
+
+    it('warns about a likely duplicate and saves nothing', async () => {
+    db.pool = [{ id: 'dup-1', first_name: 'Test', last_name: 'Recruit', graduation_year: 2028, high_school: 'Central' }]
+    const result = await createRecruit({}, fd(base))
+    expect(result.duplicates?.map((d) => d.id)).toEqual(['dup-1'])
+    expect(db.inserts).toHaveLength(0)
+  })
+
+  it('saves anyway when the coach chooses Create anyway', async () => {
+    db.pool = [{ id: 'dup-1', first_name: 'Test', last_name: 'Recruit', graduation_year: 2028, high_school: 'Central' }]
+    await expect(createRecruit({}, fd({ ...base, intent: 'force' }))).rejects.toThrow('REDIRECT:/recruits/new-id')
+    expect(db.inserts).toHaveLength(1)
   })
 })
 
