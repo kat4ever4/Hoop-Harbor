@@ -6,6 +6,9 @@ const db = vi.hoisted(() => ({
   updates: [] as Record<string, unknown>[],
   inserts: [] as Record<string, unknown>[],
   pool: [] as Record<string, unknown>[],
+  rpcRows: [] as Record<string, unknown>[],
+  rpcError: null as { message: string } | null,
+  rpcCalls: [] as { name: string; args: Record<string, unknown> }[],
 }))
 
 vi.mock('next/cache', () => ({ revalidatePath: vi.fn() }))
@@ -14,6 +17,10 @@ vi.mock('next/navigation', () => ({
 }))
 vi.mock('@/lib/supabase/server', () => ({
   createClient: async () => ({
+    rpc: async (name: string, args: Record<string, unknown>) => {
+      db.rpcCalls.push({ name, args })
+      return { data: db.rpcRows, error: db.rpcError }
+    },
     from: () => ({
       insert: (values: Record<string, unknown>) => {
         db.inserts.push(values)
@@ -57,6 +64,9 @@ beforeEach(() => {
   db.updates = []
   db.inserts = []
   db.pool = []
+  db.rpcRows = []
+  db.rpcError = null
+  db.rpcCalls = []
 })
 
 describe('createRecruit', () => {
@@ -82,6 +92,91 @@ describe('createRecruit', () => {
     db.pool = [{ id: 'dup-1', first_name: 'Test', last_name: 'Recruit', graduation_year: 2028, high_school: 'Central' }]
     await expect(createRecruit({}, fd({ ...base, intent: 'force' }))).rejects.toThrow('REDIRECT:/recruits/new-id')
     expect(db.inserts).toHaveLength(1)
+  })
+})
+
+describe('F4 SQL integration', () => {
+  it('calls the duplicate finder RPC when creating a recruit', async () => {
+    await expect(createRecruit({}, fd(base)))
+      .rejects.toThrow('REDIRECT:/recruits/new-id')
+
+    expect(db.rpcCalls).toEqual([{
+      name: 'find_possible_duplicates',
+      args: {
+        p_first: 'Test',
+        p_last: 'Recruit',
+        p_grad_year: 2028,
+        p_school: 'Central',
+        p_club: null,
+      },
+    }])
+  })
+
+  it('shows a warning for an SQL duplicate', async () => {
+    db.rpcRows = [{
+      id: 'dup-1',
+      first_name: 'Test',
+      last_name: 'Recruit',
+      graduation_year: 2028,
+      high_school: 'Central',
+      pipeline_stage: 'identified',
+    }]
+
+    const result = await createRecruit({}, fd(base))
+
+    expect(result.duplicates?.map((m) => m.id)).toEqual(['dup-1'])
+    expect(db.inserts).toHaveLength(0)
+  })
+
+  it('records the override flag and timestamp', async () => {
+    db.pool = [{
+      id: 'dup-1',
+      first_name: 'Test',
+      last_name: 'Recruit',
+      graduation_year: 2028,
+      high_school: 'Central',
+    }]
+
+    await expect(
+      createRecruit({}, fd({ ...base, intent: 'force' }))
+    ).rejects.toThrow('REDIRECT:/recruits/new-id')
+
+    expect(db.inserts[0].created_despite_duplicate).toBe(true)
+    expect(
+      Date.parse(String(db.inserts[0].duplicate_override_at))
+    ).not.toBeNaN()
+
+    expect(db.rpcCalls).toHaveLength(1)
+  })
+
+  it('does not record an override when no duplicates exist', async () => {
+    await expect(
+      createRecruit({}, fd({ ...base, intent: 'force' }))
+    ).rejects.toThrow('REDIRECT:/recruits/new-id')
+
+    expect(db.inserts[0].created_despite_duplicate).toBeUndefined()
+    expect(db.inserts[0].duplicate_override_at).toBeUndefined()
+  })
+
+  it('blocks saving when the duplicate RPC fails', async () => {
+    db.rpcError = { message: 'Database error' }
+
+    const result = await createRecruit({}, fd(base))
+
+    expect(result.formError).toMatch(/Could not check for duplicate/)
+    expect(db.inserts).toHaveLength(0)
+  })
+
+  it('does not let Create anyway bypass an RPC failure', async () => {
+    db.rpcError = { message: 'Database error' }
+
+    const result = await createRecruit(
+      {},
+      fd({ ...base, intent: 'force' })
+    )
+
+    expect(result.formError).toMatch(/Could not check for duplicate/)
+    expect(db.inserts).toHaveLength(0)
   })
 })
 

@@ -29,13 +29,33 @@ export async function createRecruit(_prev: FormState, formData: FormData): Promi
 
   const supabase = await createClient()
 
-  // F4: warn about a possible duplicate first, unless the coach chose "Create anyway".
-  if (formData.get('intent') !== 'force') {
-    const duplicates = await findPossibleDuplicates(supabase, values)
-    if (duplicates.length > 0) return { duplicates }
+  // F4: always check duplicates, including when Create anyway is selected.
+  const lookup = await findPossibleDuplicates(supabase, values)
+
+  if (lookup.error) {
+    return { formError: lookup.error }
   }
 
-  const { data, error } = await supabase.from('recruits').insert(values).select('id').single()
+  const force = formData.get('intent') === 'force'
+
+  if (lookup.matches.length > 0 && !force) {
+    return { duplicates: lookup.matches }
+  }
+
+  // Record an override only if duplicates were actually detected.
+  const insertValues = force && lookup.matches.length > 0
+    ? {
+        ...values,
+        created_despite_duplicate: true,
+        duplicate_override_at: new Date().toISOString(),
+      }
+    : values
+
+  const { data, error } = await supabase
+    .from('recruits')
+    .insert(insertValues)
+    .select('id')
+    .single()
   if (error) return { formError: friendlyDbError(error) }
 
   revalidatePath('/recruits')
