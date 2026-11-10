@@ -3,7 +3,7 @@ import { newestFirst, isEdited } from './format'
 import type { Note } from './types'
 
 const n = (id: string, occurred: string, created = occurred, updated = created): Note => ({
-  id, recruit_id: 'r', author_id: 'a', author_name: 'A', body: id, rating: null,
+  id, recruit_id: 'r', author_id: 'a', author_name: 'A', body: id,
   occurred_at: occurred, created_at: created, updated_at: updated,
 })
 

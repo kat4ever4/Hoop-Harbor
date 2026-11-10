@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useTransition } from 'react'
-import { StarRating } from '@/components/star-rating'
 import { inputClass } from '@/lib/form-styles'
 import { formatWhen, isEdited } from '@/lib/notes/format'
 import type { Note, NoteResult } from '@/lib/notes/types'
@@ -16,16 +15,14 @@ type Props = {
 export function NoteItem({ note, canEdit, updateNote, onUpdated }: Props) {
   const [editing, setEditing] = useState(false)
   const [body, setBody] = useState(note.body)
-  const [rating, setRating] = useState<number | null>(note.rating)
   const [error, setError] = useState<string | null>(null)
   const [pending, startTransition] = useTransition()
 
-  const changed = body.trim() !== note.body || rating !== note.rating
+  const changed = body.trim() !== note.body
   const canSave = body.trim() !== '' && changed && !pending
 
   function startEdit() {
     setBody(note.body)
-    setRating(note.rating)
     setError(null)
     setEditing(true)
   }
@@ -34,7 +31,6 @@ export function NoteItem({ note, canEdit, updateNote, onUpdated }: Props) {
     const fd = new FormData()
     fd.set('id', note.id)
     fd.set('body', body.trim())
-    if (rating) fd.set('rating', String(rating))
     setError(null)
     startTransition(async () => {
       try {
@@ -57,14 +53,12 @@ export function NoteItem({ note, canEdit, updateNote, onUpdated }: Props) {
             <span className="ml-2 rounded-full bg-slate-200 px-2 py-0.5 text-[11px] font-medium text-slate-600">edited</span>
           )}
         </span>
-        {!editing && <StarRating value={note.rating} />}
       </header>
 
       {editing ? (
         <div className="mt-3 space-y-3">
           <label htmlFor={`edit-${note.id}`} className="sr-only">Edit note</label>
           <textarea id={`edit-${note.id}`} rows={4} value={body} onChange={(e) => setBody(e.target.value)} className={inputClass} />
-          <StarRating value={rating} onChange={setRating} />
           {error && <p role="alert" className="text-sm text-red-700">{error}</p>}
           <div className="flex gap-2">
             <button type="button" onClick={save} disabled={!canSave}
