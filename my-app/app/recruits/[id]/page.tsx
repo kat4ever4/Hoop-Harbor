@@ -1,3 +1,4 @@
+import { EvaluationNotesPanel } from "./evaluation-notes-panel";
 import Link from 'next/link'
 import { Suspense, type ReactNode } from 'react'
 import { ArrowLeft, Pencil } from 'lucide-react'
@@ -113,17 +114,14 @@ function Profile({ r }: { r: Recruit }) {
               />
             </div>
         </Card>
+	
+	<Card title="Evaluation Notes">
+	      <Suspense fallback={<p>Loading evaluation notes...</p>}>
+	            <EvaluationNotesPanel recruitId={r.id} />
+	      </Suspense>
+	</Card>        
 
-        <Card title="Evaluation Notes">
-          <p className="text-sm text-slate-500">Evaluation notes</p>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              {/* Evaluation Notes Placeholders */}
-            </div>
-          </div>
-        </Card>
-        
-        <Card title="Links & academics">
+	<Card title="Links & academics">
           <dl>
             <Row label="Video" value={<Links urls={r.video_links} />} />
             <Row label="Profiles" value={<Links urls={r.profile_links} />} />
