@@ -504,7 +504,11 @@ IF EXISTS (SELECT 1 FROM public.recruits WHERE id = 'a2000000-0000-4000-8000-000
 END IF;
 END $$;
 
-INSERT INTO public.recruit_other_offers (id, recruit_id, school, date_learned, source, changed_by_staff_id) VALUES
+INSERT INTO public.recruit_other_offers (id, recruit_id, school, date_learned, source, changed_by_staff_id, school_id)
+SELECT sample.id::uuid, sample.recruit_id::uuid, sample.school,
+    sample.date_learned::date, sample.source, sample.changed_by_staff_id::uuid,
+    (SELECT id FROM public.schools WHERE normalized_name = lower(btrim(sample.school)))
+FROM (VALUES
 
 ('e3000000-0000-4000-8000-000000000001', 'a2000000-0000-4000-8000-000000000001', 'Colgate University', '2026-10-02', 'Fictional email from guardian', 'b2000000-0000-4000-8000-000000000002'),
 ('e3000000-0000-4000-8000-000000000002', 'a2000000-0000-4000-8000-000000000002', 'Lehigh University', '2026-10-03', 'Fictional conversation with high school coach', 'b2000000-0000-4000-8000-000000000003'),
@@ -580,7 +584,9 @@ INSERT INTO public.recruit_other_offers (id, recruit_id, school, date_learned, s
 ('e3000000-0000-4000-8000-000000000072', 'a2000000-0000-4000-8000-000000000022', 'Bucknell University', '2026-10-17', 'Fictional call with player', 'b2000000-0000-4000-8000-000000000001'),
 ('e3000000-0000-4000-8000-000000000073', 'a2000000-0000-4000-8000-000000000023', 'Colgate University', '2026-10-18', 'Fictional email from guardian', 'b2000000-0000-4000-8000-000000000002'),
 ('e3000000-0000-4000-8000-000000000074', 'a2000000-0000-4000-8000-000000000024', 'Lehigh University', '2026-10-19', 'Fictional conversation with high school coach', 'b2000000-0000-4000-8000-000000000003'),
-('e3000000-0000-4000-8000-000000000075', 'a2000000-0000-4000-8000-000000000025', 'Lafayette College', '2026-10-20', 'Fictional call with player', 'b2000000-0000-4000-8000-000000000001') ON CONFLICT (id) DO NOTHING;
+('e3000000-0000-4000-8000-000000000075', 'a2000000-0000-4000-8000-000000000025', 'Lafayette College', '2026-10-20', 'Fictional call with player', 'b2000000-0000-4000-8000-000000000001')
+) AS sample(id, recruit_id, school, date_learned, source, changed_by_staff_id)
+ON CONFLICT (id) DO NOTHING;
 
 INSERT INTO public.recruit_visits (id, recruit_id, visit_type, visit_date, status, details, changed_by_staff_id) VALUES
 

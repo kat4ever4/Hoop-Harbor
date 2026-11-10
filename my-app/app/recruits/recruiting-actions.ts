@@ -311,35 +311,40 @@ async function resolveSchool(
   supabase: Awaited<ReturnType<typeof createClient>>,
   schoolName: string
 ): Promise<SchoolResult> {
-  const { data: alias, error: aliasError } = await supabase
-    .from("school_aliases")
-    .select("school_id")
-    .eq("normalized_alias", schoolName.trim().toLowerCase())
-    .maybeSingle();
+  const normalizedName = schoolName.trim().toLowerCase();
+  // Quote one PostgreSQL array element so commas, quotes, and backslashes
+  // in a school name stay literal instead of changing the contains filter.
+  const aliasLiteral = `{"${normalizedName.replace(/\\/g, "\\\\").replace(/"/g, '\\"')}"}`;
+  const [canonicalResult, aliasResult] = await Promise.all([
+    supabase.from("schools").select("id, name")
+      .eq("normalized_name", normalizedName).limit(2),
+    supabase.from("schools").select("id, name")
+      .contains("aliases", aliasLiteral).limit(2),
+  ]);
 
-  if (aliasError) {
+  if (canonicalResult.error || aliasResult.error) {
     return { error: "Could not look up school." };
   }
 
-  if (!alias) {
+  // A school may match both its canonical name and an alias. Count it once.
+  const matches = new Map<string, School>();
+  for (const school of [...(canonicalResult.data ?? []), ...(aliasResult.data ?? [])]) {
+    matches.set(school.id, school);
+  }
+
+  if (matches.size === 0) {
     return {
       error: "Unknown school. Add it to the school directory first.",
     };
   }
 
-  const { data: school, error: schoolError } = await supabase
-    .from("schools")
-    .select("id, name")
-    .eq("id", alias.school_id)
-    .maybeSingle();
-
-  if (schoolError || !school) {
+  if (matches.size > 1) {
     return {
-      error: "Could not find the school record.",
+      error: "Multiple schools match that name. Use the school's full official name.",
     };
   }
 
-  return { school };
+  return { school: [...matches.values()][0] };
 }
 
 function validateOffer(input: OfferInput): string | null {

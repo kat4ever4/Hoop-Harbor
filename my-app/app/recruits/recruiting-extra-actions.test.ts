@@ -34,6 +34,7 @@ const schoolId = "e2000000-0000-4000-8000-000000000001";
 function makeQuery() {
   return {
     select: vi.fn().mockReturnThis(),
+    contains: vi.fn().mockReturnThis(),
     eq: vi.fn().mockReturnThis(),
     is: vi.fn().mockReturnThis(),
     neq: vi.fn().mockReturnThis(),
@@ -56,7 +57,6 @@ function makeQuery() {
 
 let visits: ReturnType<typeof makeQuery>;
 let offers: ReturnType<typeof makeQuery>;
-let aliases: ReturnType<typeof makeQuery>;
 let schools: ReturnType<typeof makeQuery>;
 
 const visit = {
@@ -81,7 +81,6 @@ beforeEach(() => {
 
   visits = makeQuery();
   offers = makeQuery();
-  aliases = makeQuery();
   schools = makeQuery();
 
   visits.single.mockResolvedValue({
@@ -99,16 +98,8 @@ beforeEach(() => {
     error: null,
   });
 
-  aliases.maybeSingle.mockResolvedValue({
-    data: { school_id: schoolId },
-    error: null,
-  });
-
-  schools.maybeSingle.mockResolvedValue({
-    data: {
-      id: schoolId,
-      name: "University of Connecticut",
-    },
+  schools.limit.mockResolvedValue({
+    data: [{ id: schoolId, name: "University of Connecticut" }],
     error: null,
   });
 
@@ -120,7 +111,6 @@ beforeEach(() => {
   mocks.from.mockImplementation((table: string) => {
     if (table === "recruit_visits") return visits;
     if (table === "recruit_other_offers") return offers;
-    if (table === "school_aliases") return aliases;
     if (table === "schools") return schools;
 
     throw new Error(`Unexpected table: ${table}`);
@@ -211,10 +201,8 @@ describe("outside offer actions", () => {
       id: offerId,
     });
 
-    expect(aliases.eq).toHaveBeenCalledWith(
-      "normalized_alias",
-      "uconn"
-    );
+    expect(schools.eq).toHaveBeenCalledWith("normalized_name", "uconn");
+    expect(schools.contains).toHaveBeenCalledWith("aliases", '{"uconn"}');
 
     expect(offers.insert).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -223,6 +211,60 @@ describe("outside offer actions", () => {
         changed_by_staff_id: staffId,
       })
     );
+  });
+
+  it("resolves an alias when the canonical name does not match", async () => {
+    schools.limit.mockResolvedValueOnce({ data: [], error: null });
+    const result = await createOutsideOffer({ ...offer, schoolName: "  UCONN  " });
+    expect(result.success).toBe(true);
+    expect(schools.contains).toHaveBeenCalledWith("aliases", '{"uconn"}');
+  });
+
+  it("resolves a canonical name even when its aliases array is empty", async () => {
+    schools.limit
+      .mockResolvedValueOnce({ data: [{ id: schoolId, name: "University of Connecticut" }], error: null })
+      .mockResolvedValueOnce({ data: [], error: null });
+    const result = await createOutsideOffer({ ...offer, schoolName: "University of Connecticut" });
+    expect(result.success).toBe(true);
+    expect(schools.eq).toHaveBeenCalledWith("normalized_name", "university of connecticut");
+  });
+
+  it("rejects ambiguous aliases without saving an offer", async () => {
+    schools.limit.mockResolvedValue({
+      data: [{ id: schoolId, name: "First University" }, { id: "other-school", name: "Second University" }],
+      error: null,
+    });
+    const result = await createOutsideOffer(offer);
+    expect(result).toMatchObject({ success: false, error: expect.stringContaining("Multiple schools") });
+    expect(offers.insert).not.toHaveBeenCalled();
+  });
+
+  it("quotes punctuation in an alias as one literal array element", async () => {
+    const result = await createOutsideOffer({ ...offer, schoolName: '  College, "North" \\ Campus  ' });
+    expect(result.success).toBe(true);
+    expect(schools.contains).toHaveBeenCalledWith(
+      "aliases", String.raw`{"college, \"north\" \\ campus"}`
+    );
+  });
+
+  it("rejects a canonical-name/alias collision across different schools", async () => {
+    schools.limit
+      .mockResolvedValueOnce({ data: [{ id: schoolId, name: "First University" }], error: null })
+      .mockResolvedValueOnce({ data: [{ id: "other-school", name: "Second University" }], error: null });
+    const result = await updateOutsideOffer({ ...offer, offerId });
+    expect(result).toMatchObject({ success: false, error: expect.stringContaining("Multiple schools") });
+    expect(offers.update).not.toHaveBeenCalled();
+  });
+
+  it.each([0, 1])("does not save when lookup %i fails", async (failedLookup) => {
+    const match = { data: [{ id: schoolId, name: "University of Connecticut" }], error: null };
+    const failure = { data: null, error: { message: "Lookup unavailable" } };
+    schools.limit
+      .mockResolvedValueOnce(failedLookup === 0 ? failure : match)
+      .mockResolvedValueOnce(failedLookup === 1 ? failure : match);
+    const result = await createOutsideOffer(offer);
+    expect(result).toMatchObject({ success: false, error: "Could not look up school." });
+    expect(offers.insert).not.toHaveBeenCalled();
   });
 
   it("rejects a duplicate offer from the same canonical school", async () => {
@@ -256,8 +298,8 @@ describe("outside offer actions", () => {
   });
 
   it("rejects unknown schools rather than saving free text", async () => {
-    aliases.maybeSingle.mockResolvedValue({
-      data: null,
+    schools.limit.mockResolvedValue({
+      data: [],
       error: null,
     });
 
