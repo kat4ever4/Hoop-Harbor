@@ -106,7 +106,7 @@ export function parseRecruitForm(form: FormLike): { values: RecruitValues; error
     academic_information: text(form, 'academic_information'),
     video_links,
     profile_links,
-    extra_notes: text(form, 'extra_notes'),
+    medical_notes: text(form, 'medical_notes'),
   }
 
   return { values, errors }

@@ -13,6 +13,7 @@ type Props = {
   onChange?: (id: string) => void
   error?: string
   disabled?: boolean
+  automaticLabel?: string              // empty value means use the signed-in account
 }
 
 export function StaffPicker({
@@ -24,6 +25,7 @@ export function StaffPicker({
   onChange,
   error,
   disabled,
+  automaticLabel,
 }: Props) {
   const id = useId()                    // unique per picker, even with several on one page
 
@@ -47,12 +49,12 @@ export function StaffPicker({
         {...valueProps}
         onChange={(e) => onChange?.(e.target.value)}
         disabled={disabled}
-        required
+        required={!automaticLabel}
         aria-invalid={!!error}
         aria-describedby={error ? `${id}-error` : undefined}
         className={inputClass}
       >
-        <option value="" disabled>Choose…</option>
+        <option value="" disabled={!automaticLabel}>{automaticLabel ?? 'Choose…'}</option>
         {staff.map((s) => (
           <option key={s.id} value={s.id}>{s.display_name}</option>
         ))}

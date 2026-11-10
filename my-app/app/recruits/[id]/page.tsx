@@ -82,6 +82,7 @@ function Profile({ r }: { r: Recruit }) {
             <Row label="Graduation year" value={r.graduation_year} />
             <Row label="Position(s)" value={r.positions.join(', ')} />
             <Row label="Height" value={r.height_inches != null ? inchesToHeight(r.height_inches) : null} />
+            <Row label="Weight" value={r.weight_lbs != null ? `${r.weight_lbs} lb` : null} />
             <Row label="Jersey #" value={r.jersey_number} />
             <Row label="High school" value={r.high_school} />
             <Row label="Hometown" value={[r.city, r.state_country].filter(Boolean).join(', ')} />
@@ -127,8 +128,14 @@ function Profile({ r }: { r: Recruit }) {
             <Row label="Video" value={<Links urls={r.video_links} />} />
             <Row label="Profiles" value={<Links urls={r.profile_links} />} />
             <Row label="Academics" value={r.academic_information} />
+            <Row label="GPA" value={r.gpa != null ? `${r.gpa} / ${r.gpa_scale}` : null} />
           </dl>
-          {r.extra_notes && <p className="mt-3 whitespace-pre-wrap rounded-lg bg-slate-50 p-3 text-sm">{r.extra_notes}</p>}
+          {r.medical_notes && (
+            <div className="mt-3 rounded-lg bg-slate-50 p-3 text-sm">
+              <h3 className="font-semibold">Medical notes</h3>
+              <p className="whitespace-pre-wrap">{r.medical_notes}</p>
+            </div>
+          )}
         </Card>
       </div>
     </>

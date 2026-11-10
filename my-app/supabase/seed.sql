@@ -1,8 +1,8 @@
 -- Hoop Harbor fictional sample records for LOCAL / TEST ONLY.
 -- Do not run against production. Hosted projects require manual seed execution.
--- Designed for the original schema migration plus the unify_recruit_details migration.
+-- Legacy fixtures retained in the archived v1 table after promotion.
 
-INSERT INTO public.recruits (
+INSERT INTO public.recruits_v1 (
     id, first_name, last_name, preferred_name, graduation_year, positions,
     height_inches, high_school, city, state_country, circuit, age_group,
     club_team, jersey_number, video_links, profile_links,
