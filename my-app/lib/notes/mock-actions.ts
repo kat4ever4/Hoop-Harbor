@@ -15,11 +15,6 @@ function failIfOffline() {
   if (typeof navigator !== 'undefined' && !navigator.onLine) throw new TypeError('Failed to fetch')
 }
 
-function readRating(fd: FormData): number | null {
-  const r = fd.get('rating')
-  return r ? Number(r) : null
-}
-
 export async function addNote(fd: FormData): Promise<NoteResult> {
   await wait(500)
   failIfOffline()
@@ -42,7 +37,6 @@ export async function addNote(fd: FormData): Promise<NoteResult> {
     author_id: author.id,
     author_name: author.display_name,
     body,
-    rating: readRating(fd),
     occurred_at: now,
     created_at: now,
     updated_at: now,
@@ -62,7 +56,7 @@ export async function updateNote(fd: FormData): Promise<NoteResult> {
   const body = String(fd.get('body') ?? '').trim()
   if (!body) return { ok: false, formError: 'A note cannot be empty.' }
 
-  const updated: Note = { ...existing, body, rating: readRating(fd), updated_at: new Date().toISOString() }
+  const updated: Note = { ...existing, body, updated_at: new Date().toISOString() }
   notes.set(updated.id, updated)
   return { ok: true, note: updated }
 }

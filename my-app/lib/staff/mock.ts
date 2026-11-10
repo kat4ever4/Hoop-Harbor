@@ -1,6 +1,6 @@
 import type { StaffOption } from './types'
 
-// Temporary until Naman's staff_members_v2 is on main.
+// Test fixtures only. Application forms load active profiles from staff_members.
 export const MOCK_STAFF: StaffOption[] = [
   { id: 'mock-casey', display_name: 'Casey Rowan' },
   { id: 'mock-dana', display_name: 'Dana Mercer' },
