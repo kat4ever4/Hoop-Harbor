@@ -6,6 +6,9 @@ Hoop Harbor uses **Supabase PostgreSQL** for recruiting data and **Supabase Auth
 
 **DATABASE STRUCTURE UNDERGOING CHANGES. NEED TO CONSOLIDATE**
 
+The school directory has now been consolidated into `schools.aliases text[]`.
+See [School directory and alias lookup](school-directory.md) for the current structure, sample data, and migration checks. Historical migrations still mention the former `school_aliases` table.
+
 The project currently contains two generations of recruiting tables:
 
 - **Original tables** (`recruits`, `staff_members`) support the existing recruit pages and their original staff permissions.
@@ -30,8 +33,7 @@ Supabase project | Purpose |
 | `recruit_visits_v2` | Recruit visits: `recruit_id`, `visit_type`, `visit_date`, `status`, `details`, `changed_by_staff_id`, and optional `archived_at`. Status is `planned` or `completed`. |
 | `recruit_other_offers_v2` | Offers from other schools: `recruit_id`, `school`, canonical `school_id`, `date_learned`, `source`, `changed_by_staff_id`, and optional `archived_at`. |
 | `recruit_pipeline_history_v2` | Audit trail for pipeline, visit, and other-offer changes. Stores action (`created`/`updated`), actor, timestamp, and before/after JSON. |
-| `schools_v2` | Canonical school directory with `id`, `name`, and normalized name. |
-| `school_aliases_v2` | Alternate names (such as `UConn`) tied to one canonical `school_id`; aliases are matched case-insensitively after trimming spaces. |
+| `schools` | Canonical school directory with `id`, `name`, generated `normalized_name`, and normalized alternate names in `aliases text[]`. |
 
 ## 3. Row-Level Security (RLS)
 
@@ -47,7 +49,7 @@ Supabase project | Purpose |
 | `recruit_visits_v2` | Linked, active staff can read, add, and update visits. The database also requires a valid active `changed_by_staff_id` to write history. There is no direct delete policy. |
 | `recruit_other_offers_v2` | Linked, active staff can read, add, and update outside offers. The database also requires a valid active `changed_by_staff_id`. There is no direct delete policy. |
 | `recruit_pipeline_history_v2` | Linked, active staff can read history; ordinary clients have no insert, update, or delete policy. The database trigger writes the audit entries. |
-| `schools_v2`, `school_aliases_v2` | Linked, active staff can read schools and aliases. No client-side write policies are defined; directory changes are managed through reviewed SQL/migrations. |
+| `schools` | Linked, active staff can read schools and their aliases. No client-side write policies are defined; directory changes are managed through reviewed SQL/migrations. |
 
 ### How staff checking works
 
