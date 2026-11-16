@@ -11,14 +11,18 @@ type Props = {
   recruitId: string
   staff: StaffOption[]
   pickAuthor: boolean                 // Naman's Q2: show the "Entered by" picker?
+  defaultStaffId?: string             // pre-select the signed-in coach in the dropdown
   addNote: (fd: FormData) => Promise<NoteResult>
   onSaved: (note: Note) => void
 }
 
-export function AddNote({ recruitId, staff, pickAuthor, addNote, onSaved }: Props) {
+export function AddNote({ recruitId, staff, pickAuthor, defaultStaffId, addNote, onSaved }: Props) {
   const [open, setOpen] = useState(false)
   const [body, setBody] = useState('')
-  const [staffId, setStaffId] = useState('')
+  // Only pre-select if that person is actually in the dropdown list.
+  const [staffId, setStaffId] = useState(
+    defaultStaffId && staff.some((s) => s.id === defaultStaffId) ? defaultStaffId : '',
+  )
   const [failed, setFailed] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [pending, startTransition] = useTransition()

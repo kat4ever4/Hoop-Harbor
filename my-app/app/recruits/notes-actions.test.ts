@@ -289,19 +289,46 @@ describe("Real evaluation note server actions", () => {
     ).not.toHaveBeenCalled();
   });
 
-  it("rejects another coach's author ID", async () => {
-    const result = await addNote(
-      form({
-        author_id:
-          "b2000000-0000-4000-8000-000000000002",
-      })
+  it("saves the staff member chosen in the Entered by dropdown", async () => {
+    const OTHER = "b2000000-0000-4000-8000-000000000002";
+
+    const result = await addNote(form({ author_id: OTHER }));
+
+    expect(result.ok).toBe(true);
+    expect(notes.insert).toHaveBeenCalledWith(
+      expect.objectContaining({ author_id: OTHER })
     );
+  });
+
+  it("defaults the author to the signed-in coach", async () => {
+    await addNote(form());
+
+    expect(notes.insert).toHaveBeenCalledWith(
+      expect.objectContaining({ author_id: STAFF })
+    );
+  });
+
+  it("rejects a malformed author ID", async () => {
+    const result = await addNote(form({ author_id: "not-a-uuid" }));
 
     expect(result.ok).toBe(false);
+    expect(notes.insert).not.toHaveBeenCalled();
+  });
 
-    expect(
-      notes.insert
-    ).not.toHaveBeenCalled();
+  it("explains when the chosen staff name is inactive", async () => {
+    notes.single.mockResolvedValue({
+      data: null,
+      error: { code: "42501" },
+    });
+
+    const result = await addNote(
+      form({ author_id: "b2000000-0000-4000-8000-000000000002" })
+    );
+
+    expect(result).toMatchObject({
+      ok: false,
+      formError: expect.stringContaining("isn't active"),
+    });
   });
 
   it("updates an existing note", async () => {

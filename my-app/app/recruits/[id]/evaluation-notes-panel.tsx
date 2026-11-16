@@ -46,7 +46,8 @@ export async function EvaluationNotesPanel({
     supabase
       .from("staff_members")
       .select("id,display_name,role")
-      .eq("is_active", true),
+      .eq("is_active", true)
+      .order("display_name"),
   ]);
 
   if (notesResult.error || staffResult.error) {
@@ -81,7 +82,7 @@ export async function EvaluationNotesPanel({
       }))}
       currentStaffId={staffId}
       isAdmin={currentStaff?.role === "admin"}
-      pickAuthor={false}
+      pickAuthor // "Entered by" dropdown, defaults to the signed-in coach
     />
   );
 }

@@ -143,16 +143,17 @@ export async function addNote(
 
   const { client, staffId } = session;
 
-  // Existing RLS permits adding notes as yourself.
-  if (
-    requestedAuthor &&
-    requestedAuthor !== staffId
-  ) {
+  // F2 (pre-accounts): "Entered by" comes from the staff dropdown.
+  // Blank means the signed-in coach. The notes_insert RLS policy
+  // (20261109193000) only accepts an ACTIVE staff member as author.
+  if (requestedAuthor && !UUID.test(requestedAuthor)) {
     return {
       ok: false,
-      formError: "You can only create notes as yourself.",
+      formError: "Choose a staff name from the list.",
     };
   }
+
+  const authorId = requestedAuthor || staffId;
 
   // Save to the existing recruit_notes table.
   const { data, error } = await client
@@ -160,7 +161,7 @@ export async function addNote(
     .insert({
       client_request_id: requestId,
       recruit_id: recruitId,
-      author_id: staffId,
+      author_id: authorId,
       note_type: "evaluation",
       body,
     })
@@ -205,7 +206,7 @@ export async function addNote(
       !matchesSavedRequest(
         existing as NoteRow,
         recruitId,
-        staffId,
+        authorId,
         body
       )
     ) {
@@ -225,10 +226,13 @@ export async function addNote(
     };
   }
 
+  // 42501 = blocked by RLS, e.g. the chosen staff name was deactivated.
   return {
     ok: false,
     formError:
-      "Unable to save note. Check staff access and recruit ID.",
+      error?.code === "42501"
+        ? "That staff name isn't active. Choose another name."
+        : "Unable to save note. Check staff access and recruit ID.",
   };
 }
 
