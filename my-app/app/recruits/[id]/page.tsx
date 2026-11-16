@@ -8,9 +8,9 @@ import { fullName, type Recruit } from '@/lib/recruits/fields'
 import { inchesToHeight } from '@/lib/format-height'
 import { AccessNotice } from '../access-notice'
 import { RecruitNotFound } from '../not-found-message'
-import { StatusSection } from './status-section';
-import { getStatusColor } from '@/lib/status/colors';
-import { MOCK_RECRUIT_STATUS, MOCK_STAFF_OPTIONS } from '@/lib/status/mock';
+import { RecruitStatusPanel } from './recruit-status-panel'
+import { getStatusColor } from '@/lib/status/colors'
+import { stageByKey } from '@/lib/status/stages'
 
 function Card({ title, children }: { title: string; children: ReactNode }) {
   return (
@@ -42,20 +42,12 @@ function Links({ urls }: { urls: string[] }) {
 const when = (iso: string) =>
   new Date(iso).toLocaleString('en-US', { timeZone: 'America/New_York', dateStyle: 'medium', timeStyle: 'short' })
 
-const USE_MOCKS = true;
-
 function Profile({ r }: { r: Recruit }) {
-
-  const statusData = MOCK_RECRUIT_STATUS;
-  const staffData = MOCK_STAFF_OPTIONS;
-  const currentStatus = 'to be confirmed'; //update with real data
-
-  if (!USE_MOCKS) {
-    // TODO(F3): Naman - Replace with actual Supabase queries when ready
-    // const { data } = await supabase.from('recruits_v2').select('...').eq('id', params.id);
-    // statusData = data;
-    // staffData = await fetchStaffMembers();
-  }
+  const currentStatus =
+    stageByKey(
+      (r as Recruit & { pipeline_stage?: string })
+        .pipeline_stage ?? null
+    )?.label ?? 'To be confirmed'
 
   return (
     <>
@@ -104,14 +96,10 @@ function Profile({ r }: { r: Recruit }) {
           </dl>
         </Card>
 
-        <Card title="Status Notes">
-            <div>
-              <StatusSection
-                recruitId={r.id}
-                status={statusData}
-                staff={staffData}
-              />
-            </div>
+        <Card title="Recruiting Status">
+          <Suspense fallback={<p>Loading recruiting status...</p>}>
+            <RecruitStatusPanel recruitId={r.id} />
+          </Suspense>
         </Card>
 
         <Card title="Evaluation Notes">

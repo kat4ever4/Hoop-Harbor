@@ -5,6 +5,13 @@ import React, { useState } from 'react';
 import type { RecruitStatus, StaffOption, VisitType } from '@/lib/status/types';
 import { STAGES } from '@/lib/status/stages';
 import { StageBadge } from '@/components/stage-badge';
+import { useRouter } from 'next/navigation';
+import {
+  changeRecruitStage,
+  saveUsnaOffer,
+  createOutsideOffer,
+  createRecruitVisit,
+} from '@/app/recruits/recruiting-actions';
 
 // Copied from app/recruits/[id]/page.tsx as requested
 function when(dateString: string | null) {
@@ -39,9 +46,47 @@ interface StatusSectionProps {
   recruitId: string;
   status: RecruitStatus;
   staff: StaffOption[];
+  schoolNames?: string[];
 }
 
-export function StatusSection({ recruitId, status, staff }: StatusSectionProps) {
+export function StatusSection({
+  recruitId,
+  status,
+  staff,
+  schoolNames = [],
+}: StatusSectionProps) {
+  const router = useRouter();
+
+  const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
+
+  async function runSave(
+    action: () => Promise<{ success: boolean; error?: string }>,
+    onSaved: () => void,
+  ) {
+    if (saving) return;
+
+    setSaving(true);
+    setSaveError(null);
+
+    try {
+      const result = await action();
+
+      if (!result.success) {
+        setSaveError(result.error ?? 'Could not save changes.');
+        return;
+      }
+
+      onSaved();
+      router.refresh();
+    } catch {
+      setSaveError(
+        'Network error. Your changes were not saved. Please retry.'
+      );
+    } finally {
+      setSaving(false);
+    }
+  }
   // 4a. Status Card State
   const [isEditingStage, setIsEditingStage] = useState(false);
   const [selectedStage, setSelectedStage] = useState(status.pipeline_stage || '');
@@ -68,6 +113,12 @@ export function StatusSection({ recruitId, status, staff }: StatusSectionProps) 
 
   return (
     <div className="space-y-6">
+      {saveError && (
+        <p role="alert"
+          className="rounded-lg border border-red-300 bg-red-50 p-3 text-sm text-red-700">
+          {saveError}
+        </p>
+      )}
       {/* 4a. Status Card */}
       <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
         <h2 className="text-lg font-semibold text-gray-900 mb-4">Pipeline Stage</h2>
@@ -84,7 +135,11 @@ export function StatusSection({ recruitId, status, staff }: StatusSectionProps) 
               </p>
             </div>
             <button 
-              onClick={() => setIsEditingStage(true)}
+              onClick={() => {
+      setSaveError(null);
+      setSelectedStage(status.pipeline_stage ?? '');
+      setIsEditingStage(true);
+    }}
               className="text-sm font-medium text-blue-600 hover:text-blue-700"
             >
               Change stage
@@ -116,11 +171,15 @@ export function StatusSection({ recruitId, status, staff }: StatusSectionProps) 
 
             <div className="flex gap-2 w-full sm:w-auto mt-2 sm:mt-0">
               <button
-                disabled={!selectedStage || !stageStaffId}
-                onClick={() => {
-                  // TODO(F3): send pipeline_stage: selectedStage, pipeline_changed_by_staff_id: stageStaffId
-                  setIsEditingStage(false);
-                }}
+                disabled={saving || !selectedStage || !stageStaffId}
+                onClick={() => void runSave(
+                  () => changeRecruitStage(
+                    recruitId,
+                    selectedStage,
+                    stageStaffId
+                  ),
+                  () => setIsEditingStage(false),
+                )}
                 className="flex-1 sm:flex-none rounded bg-blue-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
               >
                 Save
@@ -175,11 +234,15 @@ export function StatusSection({ recruitId, status, staff }: StatusSectionProps) 
             </select>
             <div className="flex gap-2 w-full sm:w-auto mt-2 sm:mt-0">
               <button
-                disabled={!usnaDate || !usnaStaffId}
-                onClick={() => {
-                  // TODO(F3): send usna_offer_date: usnaDate, usna_offered_by_staff_id: usnaStaffId
-                  setIsAddingUsnaOffer(false);
-                }}
+                disabled={saving || !usnaDate || !usnaStaffId}
+                onClick={() => void runSave(
+                  () => saveUsnaOffer({
+                    recruitId,
+                    staffId: usnaStaffId,
+                    offerDate: usnaDate,
+                  }),
+                  () => setIsAddingUsnaOffer(false),
+                )}
                 className="flex-1 sm:flex-none rounded bg-blue-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
               >
                 Save
@@ -311,7 +374,13 @@ export function StatusSection({ recruitId, status, staff }: StatusSectionProps) 
                   onChange={(e) => setOtherSchool(e.target.value)}
                   className="block w-full rounded-md border-gray-300 py-1.5 text-sm shadow-sm focus:border-blue-500 focus:ring-blue-500"
                   placeholder="e.g. University of Connecticut"
+                  list="f3-known-schools"
                 />
+                <datalist id="f3-known-schools">
+                  {schoolNames.map((name) => (
+                    <option key={name} value={name} />
+                  ))}
+                </datalist>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Date Learned</label>
@@ -354,11 +423,23 @@ export function StatusSection({ recruitId, status, staff }: StatusSectionProps) 
                 Cancel
               </button>
               <button 
-                disabled={!otherSchool || !otherDate || !otherStaffId}
-                onClick={() => {
-                  // TODO(F3): Insert into recruit_other_offers_v2 with changed_by_staff_id
-                  setIsAddingOtherOffer(false);
-                }}
+                disabled={saving || !otherSchool.trim() || !otherDate || !otherSource.trim() || !otherStaffId}
+                onClick={() => void runSave(
+                  () => createOutsideOffer({
+                    recruitId,
+                    staffId: otherStaffId,
+                    schoolName: otherSchool,
+                    dateLearned: otherDate,
+                    source: otherSource,
+                  }),
+                  () => {
+                    setIsAddingOtherOffer(false);
+                    setOtherSchool('');
+                    setOtherDate('');
+                    setOtherSource('');
+                    setOtherStaffId('');
+                  },
+                )}
                 className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded hover:bg-blue-700 disabled:opacity-50"
               >
                 Save Offer
@@ -429,11 +510,23 @@ export function StatusSection({ recruitId, status, staff }: StatusSectionProps) 
                 Cancel
               </button>
               <button 
-                disabled={!visitType || !visitDate || !visitStaffId}
-                onClick={() => {
-                  // TODO(F3): Insert into recruit_visits_v2 with changed_by_staff_id
-                  setIsAddingVisit(false);
-                }}
+                disabled={saving || !visitType || !visitDate || !visitStaffId}
+                onClick={() => void runSave(
+                  () => createRecruitVisit({
+                    recruitId,
+                    staffId: visitStaffId,
+                    visitType,
+                    visitDate,
+                    status: visitStatus,
+                  }),
+                  () => {
+                    setIsAddingVisit(false);
+                    setVisitType('');
+                    setVisitDate('');
+                    setVisitStatus('planned');
+                    setVisitStaffId('');
+                  },
+                )}
                 className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded hover:bg-blue-700 disabled:opacity-50"
               >
                 Save Visit
