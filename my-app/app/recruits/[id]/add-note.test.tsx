@@ -41,3 +41,19 @@ describe('AddNote', () => {
     expect(second).toBe(first)
   })
 })
+
+describe('AddNote Entered by default', () => {
+  it('pre-selects the signed-in coach so Save works with just text', () => {
+    render(<AddNote recruitId="r1" staff={MOCK_STAFF} pickAuthor defaultStaffId="mock-dana" addNote={vi.fn()} onSaved={vi.fn()} />)
+    fireEvent.click(screen.getByRole('button', { name: /add note/i }))
+    expect(screen.getByLabelText('Entered by')).toHaveValue('mock-dana')
+    fireEvent.change(screen.getByLabelText('Note'), { target: { value: 'Quick first step' } })
+    expect(screen.getByRole('button', { name: 'Save' })).toBeEnabled()
+  })
+
+  it('leaves the dropdown empty when the default is not an active staff name', () => {
+    render(<AddNote recruitId="r1" staff={MOCK_STAFF} pickAuthor defaultStaffId="someone-else" addNote={vi.fn()} onSaved={vi.fn()} />)
+    fireEvent.click(screen.getByRole('button', { name: /add note/i }))
+    expect(screen.getByLabelText('Entered by')).toHaveValue('')
+  })
+})

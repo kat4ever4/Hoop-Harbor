@@ -44,6 +44,7 @@ export function NotesClient({
         recruitId={recruitId}
         staff={staff}
         pickAuthor={pickAuthor}
+        defaultStaffId={currentStaffId}
         addNote={addNote}
         onSaved={upsert}
       />
