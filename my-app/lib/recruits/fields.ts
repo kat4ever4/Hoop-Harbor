@@ -60,7 +60,7 @@ export const EDITABLE_COLUMNS = [
   'first_name', 'last_name', 'preferred_name', 'graduation_year', 'positions',
   'height_inches', 'high_school', 'city', 'state_country', 'club_team', 'circuit',
   'age_group', 'jersey_number', 'recruit_email', 'recruit_phone', 'guardian_contacts',
-  'birthday', 'academic_information', 'video_links', 'profile_links', 'pipeline_stage', 'extra_notes', 'medical_notes',
+  'birthday', 'academic_information', 'video_links', 'profile_links', 'pipeline_stage', 'medical_notes',
 ] as const satisfies readonly (keyof RecruitValues)[]
 
 /** Friendly names used in error and conflict messages. */
