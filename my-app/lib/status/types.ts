@@ -15,15 +15,23 @@ export type Visit = {
   visit_type: VisitType
   visit_date: string
   status: 'planned' | 'completed'   // no 'cancelled' yet
+  changed_by_staff_id?: string | null;
 }
 
-export type RecruitStatus = {
-  pipeline_stage: StageKey | null
-  stage_changed_at: string | null    // from newest pipeline history row
-  stage_changed_by: string | null    // staff_name_at_change from that row
-  usna_offer_date: string | null
-  usna_offered_by: string | null     // display name of usna_offered_by_staff_id
-  other_offers: OtherOffer[]         // only rows where archived_at IS NULL
-  visits: Visit[]                    // only rows where archived_at IS NULL
+export interface PipelineHistoryItem {
+  id: string;
+  changed_at: string;
+  staff_name_at_change: string | null;
+  action: string;
+}
+
+export interface RecruitStatus {
+  pipeline_stage: string | null;
+  usna_offer_date: string | null;
+  usna_offered_by_staff_id: string | null; // <-- Replaces usna_offered_by
+  pipeline_changed_by_staff_id?: string | null;
+  other_offers: OtherOffer[];
+  visits: Visit[];
+  pipeline_history?: PipelineHistoryItem[]; // <-- Add this array
 }
 

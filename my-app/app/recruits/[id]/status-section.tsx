@@ -5,6 +5,7 @@ import React, { useState } from 'react';
 import type { RecruitStatus, StaffOption, VisitType } from '@/lib/status/types';
 //import { getRecruit } from '@/lib/recruits/queries'
 import type { Recruit } from '@/lib/recruits/fields'
+import type { PipelineStage } from '@/lib/recruits/fields'
 //import { getStaffMemberById } from '@/lib/staff/queries'
 import { STAGES } from '@/lib/status/stages';
 import { StageBadge } from '@/components/stage-badge';
@@ -101,7 +102,7 @@ export function StatusSection({ r, status, staff }: StatusSectionProps) {
           <div className="flex flex-col sm:flex-col gap-3 items-start sm:items-center bg-gray-50 p-4 rounded-md">
             <select
               value={selectedStage}
-              onChange={(e) => setSelectedStage(e.target.value)}
+              onChange={(e) => setSelectedStage(e.target.value as PipelineStage)}
               className="block w-full sm:w-auto rounded-md border-gray-300 py-1.5 text-sm shadow-sm focus:border-blue-500 focus:ring-blue-500"
             >
               <option value="" disabled>Select stage...</option>
@@ -148,7 +149,7 @@ export function StatusSection({ r, status, staff }: StatusSectionProps) {
         <h2 className="text-lg font-semibold text-gray-900 mb-4">USNA Offer</h2>
         
         {status.usna_offer_date && !isAddingUsnaOffer ? (
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex items-center justify-between gap-4">
             <div>
               <span className="font-medium">Offered on {formatDateOnly(status.usna_offer_date)}</span>
               {offeredByStaff && <span className="text-gray-500"> by {offeredByStaff.display_name}</span>}
@@ -165,8 +166,8 @@ export function StatusSection({ r, status, staff }: StatusSectionProps) {
             </button>
           </div>
         ) : !isAddingUsnaOffer ? (
-          <div>
-            <p className="text-sm text-gray-500 mb-3">No USNA offer yet</p>
+          <div className="flex items-center justify-between gap-4">
+            <p className="test-sm text-gray-500">No USNA offer yet</p>
             <button 
               onClick={() => setIsAddingUsnaOffer(true)}
               className="text-sm font-medium text-blue-600 hover:text-blue-700"

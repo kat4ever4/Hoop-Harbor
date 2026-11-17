@@ -4,7 +4,9 @@ import Link from 'next/link'
 import { useMemo, useState } from 'react'
 import { Filter, Plus, Search, Star } from 'lucide-react'
 import { getRecruit } from '@/lib/recruits/queries'
-import { fullName, type Recruit } from '@/lib/recruits/fields'
+import type { Recruit } from '@/lib/recruits/fields'
+import { fullName } from '@/lib/recruits/fields'
+import type { RecruitListItem } from '@/lib/recruits/queries'
 import { StageBadge } from '@/components/stage-badge';
 //import { getStatusColor } from '@/lib/status/colors';
 //import { MOCK_RECRUIT_STATUS} from '@/lib/status/mock'; //delete once real data available
@@ -14,7 +16,7 @@ const selectClass =
   'block cursor-pointer rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 outline-none focus:border-indigo-500 focus:ring-indigo-500'
 
 //const name = (r: RecruitListItem) => `${r.first_name} ${r.last_name}`
-const initials = (r: Recruit) => `${r.first_name[0] ?? ''}${r.last_name[0] ?? ''}`
+const initials = (r: RecruitListItem) => `${r.first_name[0] ?? ''}${r.last_name[0] ?? ''}`
 const unique = (values: string[]) => [...new Set(values)].sort()
 
 // Stars and Status have no data yet: a star rating is not in the F1 schema, and the
@@ -30,14 +32,10 @@ function StarsPlaceholder() {
   )
 }
 
-export function RecruitTable({ recruits }: { recruits: Recruit[] }) {
+export function RecruitTable({ recruits }: { recruits: RecruitListItem[] }) {
   const [search, setSearch] = useState('')
   const [year, setYear] = useState(ALL)
   const [position, setPosition] = useState(ALL)
-
-  //replace with real data once available
-  //const statusData = MOCK_RECRUIT_STATUS as Record<string, unknown>;
-  //const currentStatus = (statusData?.status_name as string) || 'to be confirmed';
 
   const filtered = useMemo(() => {
     const term = search.trim().toLowerCase()

@@ -107,6 +107,7 @@ export function parseRecruitForm(form: FormLike): { values: RecruitValues; error
     video_links,
     profile_links,
     extra_notes: text(form, 'extra_notes'),
+    pipeline_stage: 'to_be_confirmed',
   }
 
   return { values, errors }

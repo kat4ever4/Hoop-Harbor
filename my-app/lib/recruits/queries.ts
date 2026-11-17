@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import type { Recruit } from './fields'
+import type { RecruitStatus, StaffOption } from '@/lib/status/types'
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 
@@ -47,4 +48,15 @@ export async function getRecruitStatus(id: string): Promise<RecruitStatus | null
     .maybeSingle()
 
   return (data as RecruitStatus | null) ?? null
+}
+
+export async function getStaffOptions(): Promise<StaffOption[]> {
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('staff_members') // replace with your actual staff/profiles table name
+    .select('id, display_name') // match the fields in your StaffOption type
+    .order('display_name', { ascending: true })
+  
+  if (error) throw error
+    return data ?? []
 }

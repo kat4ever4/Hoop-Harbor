@@ -9,6 +9,17 @@ export type GuardianContact = {
   phone: string | null
 }
 
+export type PipelineStage =
+  | 'priority'
+  | 'identified'
+  | 'evaluating'
+  | 'offered'
+  | 'committed_to_usna'
+  | 'committed_elsewhere'
+  | 'not_pursuing'
+  | 'to_be_confirmed'
+
+
 /** The columns a coach can edit, in the same shape as the `recruits` table. */
 export type RecruitValues = {
   first_name: string
@@ -32,6 +43,7 @@ export type RecruitValues = {
   video_links: string[]
   profile_links: string[]
   extra_notes: string | null
+  pipeline_stage: PipelineStage | "to_be_confirmed"
 }
 
 export type Recruit = RecruitValues & {
@@ -44,7 +56,7 @@ export const EDITABLE_COLUMNS = [
   'first_name', 'last_name', 'preferred_name', 'graduation_year', 'positions',
   'height_inches', 'high_school', 'city', 'state_country', 'club_team', 'circuit',
   'age_group', 'jersey_number', 'recruit_email', 'recruit_phone', 'guardian_contacts',
-  'birthday', 'academic_information', 'video_links', 'profile_links', 'extra_notes',
+  'birthday', 'academic_information', 'video_links', 'profile_links', 'pipeline_stage', 'extra_notes',
 ] as const satisfies readonly (keyof RecruitValues)[]
 
 /** Friendly names used in error and conflict messages. */
@@ -70,6 +82,7 @@ export const FIELD_LABELS: Record<keyof RecruitValues, string> = {
   video_links: 'Video links',
   profile_links: 'Profile links',
   extra_notes: 'Extra notes',
+  pipeline_stage: 'To Be Confirmed',
 }
 
 export function fullName(r: Pick<RecruitValues, 'first_name' | 'last_name' | 'preferred_name'>) {
