@@ -19,6 +19,6 @@ export async function getAccess(): Promise<Access> {
   const claims = data?.claims
   if (!claims) return { state: 'signed-out' }
   const email = (claims.email as string | undefined) ?? 'your account'
-  const { data: isStaff } = await supabase.rpc('is_hoop_harbor_staff')
+  const { data: isStaff } = await supabase.rpc('current_staff_id')
   return isStaff ? { state: 'staff', email } : { state: 'not-staff', email }
 }

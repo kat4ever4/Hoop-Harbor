@@ -1,14 +1,13 @@
 'use client'
 
 import Link from 'next/link'
-import { startTransition, useActionState, type FormEvent, type ReactNode } from 'react'
+import { startTransition, useActionState, useState, type FormEvent, type ReactNode } from 'react'
 import { createRecruit, updateRecruit, type FormState } from './actions'
 import { POSITIONS, type Recruit } from '@/lib/recruits/fields'
 import { inchesToInput } from '@/lib/format-height'
 import { pickEditable } from '@/lib/recruits/fields'
-
-const inputClass =
-  'block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-base text-slate-900 outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 aria-[invalid=true]:border-red-500'
+import { inputClass } from '@/lib/form-styles'
+import { DuplicateDialog } from './duplicate-dialog'
 
 function Field({
   name, label, error, children,
@@ -39,6 +38,10 @@ export function RecruitForm({ recruit }: { recruit?: Recruit }) {
     {},
   )
   const e = state.errors ?? {}
+
+  // F4: show the duplicate warning for each new result until the coach closes it.
+  const [dismissed, setDismissed] = useState<FormState | null>(null)
+  const showDuplicates = !!state.duplicates?.length && dismissed !== state
 
   // Submit manually so the browser keeps what the coach typed when there is an error.
   function onSubmit(event: FormEvent<HTMLFormElement>) {
@@ -80,6 +83,9 @@ export function RecruitForm({ recruit }: { recruit?: Recruit }) {
         <div role="alert" className="rounded-lg border border-red-300 bg-red-50 p-4 text-sm text-red-800">
           Nothing was saved. Fix the highlighted fields and try again.
         </div>
+      )}
+      {showDuplicates && (
+        <DuplicateDialog matches={state.duplicates!} pending={pending} onClose={() => setDismissed(state)} />
       )}
       {state.conflict && (
         <div role="alert" className="rounded-lg border border-amber-300 bg-amber-50 p-4 text-sm text-amber-900">
@@ -139,7 +145,7 @@ export function RecruitForm({ recruit }: { recruit?: Recruit }) {
         ))}
       </Section>
 
-      <Section title="Links & notes">
+      <Section title="Links, academics & health">
         <Field name="video_links" label="Video links (one per line)" error={e.video_links}>
           <textarea id="video_links" name="video_links" rows={3} defaultValue={recruit?.video_links.join('\n')} className={inputClass} />
         </Field>
@@ -149,8 +155,8 @@ export function RecruitForm({ recruit }: { recruit?: Recruit }) {
         <Field name="academic_information" label="Academic information (optional)">
           <textarea id="academic_information" name="academic_information" rows={3} defaultValue={recruit?.academic_information ?? ''} className={inputClass} />
         </Field>
-        <Field name="extra_notes" label="Extra notes">
-          <textarea id="extra_notes" name="extra_notes" rows={3} defaultValue={recruit?.extra_notes ?? ''} className={inputClass} />
+        <Field name="medical_notes" label="Medical notes">
+          <textarea id="medical_notes" name="medical_notes" rows={3} defaultValue={recruit?.medical_notes ?? ''} className={inputClass} />
         </Field>
       </Section>
 

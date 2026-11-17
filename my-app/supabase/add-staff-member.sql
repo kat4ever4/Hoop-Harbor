@@ -3,10 +3,10 @@
 -- 1. Sign up in the app first (that creates the row in auth.users).
 -- 2. Run this in the Supabase dashboard -> SQL Editor, on hoop-harbor-test.
 --    Locally: http://127.0.0.1:54323 -> SQL Editor.
--- 3. Change the email. Use 'admin' or 'staff'.
+-- 3. Change the email and display name. Use 'admin' or 'staff'.
 
-INSERT INTO public.staff_members (user_id, role)
-SELECT id, 'admin'
+INSERT INTO public.staff_members (user_id, display_name, role)
+SELECT id, 'Your name', 'admin'
 FROM auth.users
 WHERE email = 'you@example.com'
-ON CONFLICT (user_id) DO UPDATE SET role = EXCLUDED.role;
+ON CONFLICT (user_id) DO UPDATE SET role = EXCLUDED.role, display_name = EXCLUDED.display_name, is_active = true;

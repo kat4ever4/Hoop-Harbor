@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import type { Recruit } from './fields'
 import type { RecruitStatus, StaffOption } from '@/lib/status/types'
+import type { RecruitNote } from './notes'
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 
@@ -59,4 +60,12 @@ export async function getStaffOptions(): Promise<StaffOption[]> {
   
   if (error) throw error
     return data ?? []
+export async function listRecruitNotes(id: string): Promise<{ notes: RecruitNote[]; error?: string }> {
+  if (!UUID.test(id)) return { notes: [] }
+  const supabase = await createClient()
+  const { data, error } = await supabase.from('recruit_notes')
+    .select('id, title, body, note_type, occurred_at, author:staff_members!author_id(display_name)')
+    .eq('recruit_id', id).order('occurred_at', { ascending: false }).order('created_at', { ascending: false })
+  // Supabase's ungenerated schema types infer embedded relations as arrays.
+  return { notes: (data ?? []) as unknown as RecruitNote[], error: error?.message }
 }

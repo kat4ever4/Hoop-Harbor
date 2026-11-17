@@ -1,0 +1,1 @@
+export type StaffOption = { id: string; display_name: string }

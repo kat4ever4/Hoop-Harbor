@@ -1,3 +1,4 @@
+import { EvaluationNotesPanel } from "./evaluation-notes-panel";
 import Link from 'next/link'
 import { Suspense, type ReactNode } from 'react'
 import { ArrowLeft, Pencil } from 'lucide-react'
@@ -69,6 +70,7 @@ function Profile({ r, status, staff }: { r: Recruit; status: RecruitStatus | nul
             <Row label="Graduation year" value={r.graduation_year} />
             <Row label="Position(s)" value={r.positions.join(', ')} />
             <Row label="Height" value={r.height_inches != null ? inchesToHeight(r.height_inches) : null} />
+            <Row label="Weight" value={r.weight_lbs != null ? `${r.weight_lbs} lb` : null} />
             <Row label="Jersey #" value={r.jersey_number} />
             <Row label="High school" value={r.high_school} />
             <Row label="Hometown" value={[r.city, r.state_country].filter(Boolean).join(', ')} />
@@ -107,23 +109,26 @@ function Profile({ r, status, staff }: { r: Recruit; status: RecruitStatus | nul
             )}
             </div>
         </Card>
+	
+	<Card title="Evaluation Notes">
+	      <Suspense fallback={<p>Loading evaluation notes...</p>}>
+	            <EvaluationNotesPanel recruitId={r.id} />
+	      </Suspense>
+	</Card>        
 
-        <Card title="Evaluation Notes">
-          <p className="text-sm text-slate-500">Evaluation notes</p>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              {/* Evaluation Notes Placeholders */}
-            </div>
-          </div>
-        </Card>
-        
-        <Card title="Links & academics">
+	<Card title="Links & academics">
           <dl>
             <Row label="Video" value={<Links urls={r.video_links} />} />
             <Row label="Profiles" value={<Links urls={r.profile_links} />} />
             <Row label="Academics" value={r.academic_information} />
+            <Row label="GPA" value={r.gpa != null ? `${r.gpa} / ${r.gpa_scale}` : null} />
           </dl>
-          {r.extra_notes && <p className="mt-3 whitespace-pre-wrap rounded-lg bg-slate-50 p-3 text-sm">{r.extra_notes}</p>}
+          {r.medical_notes && (
+            <div className="mt-3 rounded-lg bg-slate-50 p-3 text-sm">
+              <h3 className="font-semibold">Medical notes</h3>
+              <p className="whitespace-pre-wrap">{r.medical_notes}</p>
+            </div>
+          )}
         </Card>
       </div>
     </>

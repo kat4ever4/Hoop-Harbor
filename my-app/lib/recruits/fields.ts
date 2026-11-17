@@ -44,10 +44,14 @@ export type RecruitValues = {
   profile_links: string[]
   extra_notes: string | null
   pipeline_stage: PipelineStage | "to_be_confirmed"
+  medical_notes: string | null
 }
 
 export type Recruit = RecruitValues & {
   id: string
+  weight_lbs: number | null
+  gpa: number | null
+  gpa_scale: number | null
   created_at: string
   updated_at: string
 }
@@ -56,7 +60,7 @@ export const EDITABLE_COLUMNS = [
   'first_name', 'last_name', 'preferred_name', 'graduation_year', 'positions',
   'height_inches', 'high_school', 'city', 'state_country', 'club_team', 'circuit',
   'age_group', 'jersey_number', 'recruit_email', 'recruit_phone', 'guardian_contacts',
-  'birthday', 'academic_information', 'video_links', 'profile_links', 'pipeline_stage', 'extra_notes',
+  'birthday', 'academic_information', 'video_links', 'profile_links', 'pipeline_stage', 'extra_notes', 'medical_notes',
 ] as const satisfies readonly (keyof RecruitValues)[]
 
 /** Friendly names used in error and conflict messages. */
@@ -83,6 +87,7 @@ export const FIELD_LABELS: Record<keyof RecruitValues, string> = {
   profile_links: 'Profile links',
   extra_notes: 'Extra notes',
   pipeline_stage: 'To Be Confirmed',
+  medical_notes: 'Medical notes',
 }
 
 export function fullName(r: Pick<RecruitValues, 'first_name' | 'last_name' | 'preferred_name'>) {

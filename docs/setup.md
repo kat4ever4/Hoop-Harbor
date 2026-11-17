@@ -77,7 +77,7 @@ Signing up creates an account, but recruit data is only available to signed-in a
 3. Copy the SQL from [`my-app/supabase/add-staff-member.sql`](../my-app/supabase/add-staff-member.sql), replace `you@example.com` with the email you signed up with, and execute it against the local database.
 4. Sign in again and open http://localhost:3000/recruits.
 
-The repository includes migrations and fictional recruits in [`my-app/supabase/seed.sql`](../my-app/supabase/seed.sql). To rebuild an existing local database with the current migrations and seed data:
+The repository includes migrations and fictional recruits in [`my-app/supabase/seed-v2.sql`](../my-app/supabase/seed-v2.sql) and [`seed-pipeline-v2.sql`](../my-app/supabase/seed-pipeline-v2.sql), which target the promoted tables after all migrations. The original `seed.sql` now populates the archived `recruits_v1` table. To rebuild an existing local database with the current migrations and seed data:
 
 ```bash
 npx supabase db reset
