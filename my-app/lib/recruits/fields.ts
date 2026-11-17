@@ -84,7 +84,6 @@ export const FIELD_LABELS: Record<keyof RecruitValues, string> = {
   academic_information: 'Academic information',
   video_links: 'Video links',
   profile_links: 'Profile links',
-  extra_notes: 'Extra notes',
   pipeline_stage: 'To Be Confirmed',
   medical_notes: 'Medical notes',
 }
