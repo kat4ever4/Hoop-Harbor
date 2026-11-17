@@ -16,6 +16,7 @@ export async function getStaffMemberById(staffId: string) {
   }
 
   return data
+}
 
 export async function listActiveStaff(): Promise<{ staff: StaffOption[]; error?: string }> {
   const supabase = await createClient()
