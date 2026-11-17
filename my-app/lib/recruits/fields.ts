@@ -42,7 +42,6 @@ export type RecruitValues = {
   academic_information: string | null
   video_links: string[]
   profile_links: string[]
-  extra_notes: string | null
   pipeline_stage: PipelineStage | "to_be_confirmed"
   medical_notes: string | null
 }
