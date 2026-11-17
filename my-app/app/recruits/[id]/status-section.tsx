@@ -3,6 +3,9 @@
 
 import React, { useState } from 'react';
 import type { RecruitStatus, StaffOption, VisitType } from '@/lib/status/types';
+//import { getRecruit } from '@/lib/recruits/queries'
+import type { Recruit } from '@/lib/recruits/fields'
+//import { getStaffMemberById } from '@/lib/staff/queries'
 import { STAGES } from '@/lib/status/stages';
 import { StageBadge } from '@/components/stage-badge';
 
@@ -36,15 +39,15 @@ const VISIT_LABELS: Record<VisitType, string> = {
 };
 
 interface StatusSectionProps {
-  recruitId: string;
+  r: Recruit;
   status: RecruitStatus;
   staff: StaffOption[];
 }
 
-export function StatusSection({ recruitId, status, staff }: StatusSectionProps) {
+export function StatusSection({ r, status, staff }: StatusSectionProps) {
   // 4a. Status Card State
   const [isEditingStage, setIsEditingStage] = useState(false);
-  const [selectedStage, setSelectedStage] = useState(status.pipeline_stage || '');
+  const [selectedStage, setSelectedStage] = useState(r.pipeline_stage || 'to be confirmed');
   const [stageStaffId, setStageStaffId] = useState('');
 
   // 4b. USNA Offer State
@@ -66,6 +69,9 @@ export function StatusSection({ recruitId, status, staff }: StatusSectionProps) 
   const [visitStatus, setVisitStatus] = useState<'planned' | 'completed'>('planned');
   const [visitStaffId, setVisitStaffId] = useState('');
 
+  //const staffMember = await getStaffMemberById(status.usna_offered_by_staff_id);
+  const offeredByStaff = staff.find((s) => s.id === status.usna_offered_by_staff_id);
+  
   return (
     <div className="space-y-6">
       {/* 4a. Status Card */}
@@ -76,11 +82,12 @@ export function StatusSection({ recruitId, status, staff }: StatusSectionProps) 
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
               <div className="scale-110 origin-left mb-2">
-                <StageBadge stage={status.pipeline_stage} />
+                <StageBadge stage={r.pipeline_stage} />
               </div>
               <p className="text-sm text-gray-500">
-                Changed {status.stage_changed_by ? `by ${status.stage_changed_by}` : ''} 
-                {status.stage_changed_at ? ` · ${when(status.stage_changed_at)}` : ''}
+                Changed {status.pipeline_history?.[0].staff_name_at_change ? `by ${status.pipeline_history[0].staff_name_at_change}` : ''}
+                <br />
+                {status.pipeline_history?.[0].changed_at ? `${when(status.pipeline_history[0].changed_at)}` : ''}
               </p>
             </div>
             <button 
@@ -91,7 +98,7 @@ export function StatusSection({ recruitId, status, staff }: StatusSectionProps) 
             </button>
           </div>
         ) : (
-          <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center bg-gray-50 p-4 rounded-md">
+          <div className="flex flex-col sm:flex-col gap-3 items-start sm:items-center bg-gray-50 p-4 rounded-md">
             <select
               value={selectedStage}
               onChange={(e) => setSelectedStage(e.target.value)}
@@ -113,7 +120,7 @@ export function StatusSection({ recruitId, status, staff }: StatusSectionProps) 
                 <option key={s.id} value={s.id}>{s.display_name}</option>
               ))}
             </select>
-
+            
             <div className="flex gap-2 w-full sm:w-auto mt-2 sm:mt-0">
               <button
                 disabled={!selectedStage || !stageStaffId}
@@ -141,9 +148,21 @@ export function StatusSection({ recruitId, status, staff }: StatusSectionProps) 
         <h2 className="text-lg font-semibold text-gray-900 mb-4">USNA Offer</h2>
         
         {status.usna_offer_date && !isAddingUsnaOffer ? (
-          <div className="text-sm text-gray-900">
-            <span className="font-medium">Offered on {formatDateOnly(status.usna_offer_date)}</span>
-            {status.usna_offered_by && <span className="text-gray-500"> by {status.usna_offered_by}</span>}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <span className="font-medium">Offered on {formatDateOnly(status.usna_offer_date)}</span>
+              {offeredByStaff && <span className="text-gray-500"> by {offeredByStaff.display_name}</span>}
+            </div>
+            <button
+              onClick={() => {    
+                setUsnaDate(status.usna_offer_date || '');
+                setUsnaStaffId(status.usna_offered_by_staff_id || '');
+                setIsAddingUsnaOffer(true);
+              }}
+              className="text-sm font-medium text-blue-600 hover:text-blue-700"
+            >
+              Edit
+            </button>
           </div>
         ) : !isAddingUsnaOffer ? (
           <div>
@@ -156,7 +175,7 @@ export function StatusSection({ recruitId, status, staff }: StatusSectionProps) 
             </button>
           </div>
         ) : (
-          <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center bg-gray-50 p-4 rounded-md">
+          <div className="flex flex-col sm:flex-col gap-3 items-start sm:items-center bg-gray-50 p-4 rounded-md">
             <input
               type="date"
               value={usnaDate}

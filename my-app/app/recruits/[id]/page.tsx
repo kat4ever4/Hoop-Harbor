@@ -3,13 +3,14 @@ import { Suspense, type ReactNode } from 'react'
 import { ArrowLeft, Pencil } from 'lucide-react'
 import { SiteNav } from '@/components/layout/site-nav'
 import { getAccess } from '@/lib/recruits/access'
-import { getRecruit } from '@/lib/recruits/queries'
+import type { RecruitStatus, StaffOption, VisitType } from '@/lib/status/types';
+import { getRecruit, getRecruitStatus } from '@/lib/recruits/queries'
 import { fullName, type Recruit } from '@/lib/recruits/fields'
 import { inchesToHeight } from '@/lib/format-height'
 import { AccessNotice } from '../access-notice'
 import { RecruitNotFound } from '../not-found-message'
 import { StatusSection } from './status-section';
-import { getStatusColor } from '@/lib/status/colors';
+import { StageBadge } from '@/components/stage-badge';
 import { MOCK_RECRUIT_STATUS, MOCK_STAFF_OPTIONS } from '@/lib/status/mock';
 
 function Card({ title, children }: { title: string; children: ReactNode }) {
@@ -44,11 +45,11 @@ const when = (iso: string) =>
 
 const USE_MOCKS = true;
 
-function Profile({ r }: { r: Recruit }) {
+function Profile({ r, status }: { r: Recruit; status: RecruitStatus | null}) {
 
-  const statusData = MOCK_RECRUIT_STATUS;
-  const staffData = MOCK_STAFF_OPTIONS;
-  const currentStatus = 'to be confirmed'; //update with real data
+  //const statusData = MOCK_RECRUIT_STATUS;
+  //const staffData = MOCK_STAFF_OPTIONS;
+  //const currentStatus = statusData.pipeline_stage || "to be confirmed"; //update with real data
 
   if (!USE_MOCKS) {
     // TODO(F3): Naman - Replace with actual Supabase queries when ready
@@ -62,9 +63,10 @@ function Profile({ r }: { r: Recruit }) {
       <div className="mb-6 flex flex-col gap-4 rounded-2xl bg-gradient-to-br from-slate-800 to-indigo-900 p-6 text-white sm:flex-row sm:items-end sm:justify-between">
         <div>
           <h1 className="text-3xl font-extrabold tracking-tight">{fullName(r)}</h1>
-          <span className={`border rounded-full px-2.5 py-0.5 text-xs font-semibold shadow-sm ${getStatusColor(currentStatus)}`}>
-              {currentStatus.toUpperCase()}
-          </span>
+          <div className="mt-2 mb-2">
+              <StageBadge stage={r.pipeline_stage} />
+          </div>
+
           <p className="mt-1 text-indigo-100">
             {[r.graduation_year && `Class of ${r.graduation_year}`, r.positions.join(' / '), r.high_school].filter(Boolean).join(' · ')}
           </p>
@@ -105,11 +107,19 @@ function Profile({ r }: { r: Recruit }) {
 
         <Card title="Status Notes">
             <div>
+              {status ? (
               <StatusSection
-                recruitId={r.id}
-                status={statusData}
-                staff={staffData}
+                r={r}
+                status={status}
+                staff={MOCK_STAFF_OPTIONS}
               />
+              ) : (
+              <div className="rounded-md bg-slate-50 p-4 text-center">
+                <p className="text-sm text-slate-500 italic">
+                  No status information exists for this recruit yet.
+                </p>
+              </div>
+            )}
             </div>
         </Card>
 
@@ -137,11 +147,11 @@ function Profile({ r }: { r: Recruit }) {
 
 async function ProfileContent({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
-  const [access, recruit] = await Promise.all([getAccess(), getRecruit(id)])
+  const [access, recruit, status] = await Promise.all([getAccess(), getRecruit(id), getRecruitStatus(id)])
   return (
     <>
       <AccessNotice access={access} />
-      {recruit ? <Profile r={recruit} /> : <RecruitNotFound />}
+      {recruit ? <Profile r={recruit} status={status} /> : <RecruitNotFound />}
     </>
   )
 }

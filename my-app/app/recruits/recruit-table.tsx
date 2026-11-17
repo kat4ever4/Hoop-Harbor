@@ -3,17 +3,18 @@
 import Link from 'next/link'
 import { useMemo, useState } from 'react'
 import { Filter, Plus, Search, Star } from 'lucide-react'
-import type { RecruitListItem } from '@/lib/recruits/queries'
+import { getRecruit } from '@/lib/recruits/queries'
+import { fullName, type Recruit } from '@/lib/recruits/fields'
 import { StageBadge } from '@/components/stage-badge';
-import { getStatusColor } from '@/lib/status/colors';
-import { MOCK_RECRUIT_STATUS} from '@/lib/status/mock'; //delete once real data available
+//import { getStatusColor } from '@/lib/status/colors';
+//import { MOCK_RECRUIT_STATUS} from '@/lib/status/mock'; //delete once real data available
 
 const ALL = 'All'
 const selectClass =
   'block cursor-pointer rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 outline-none focus:border-indigo-500 focus:ring-indigo-500'
 
-const name = (r: RecruitListItem) => `${r.first_name} ${r.last_name}`
-const initials = (r: RecruitListItem) => `${r.first_name[0] ?? ''}${r.last_name[0] ?? ''}`
+//const name = (r: RecruitListItem) => `${r.first_name} ${r.last_name}`
+const initials = (r: Recruit) => `${r.first_name[0] ?? ''}${r.last_name[0] ?? ''}`
 const unique = (values: string[]) => [...new Set(values)].sort()
 
 // Stars and Status have no data yet: a star rating is not in the F1 schema, and the
@@ -29,14 +30,14 @@ function StarsPlaceholder() {
   )
 }
 
-export function RecruitTable({ recruits }: { recruits: RecruitListItem[] }) {
+export function RecruitTable({ recruits }: { recruits: Recruit[] }) {
   const [search, setSearch] = useState('')
   const [year, setYear] = useState(ALL)
   const [position, setPosition] = useState(ALL)
 
   //replace with real data once available
-  const statusData = MOCK_RECRUIT_STATUS as Record<string, unknown>;
-  const currentStatus = (statusData?.status_name as string) || 'to be confirmed';
+  //const statusData = MOCK_RECRUIT_STATUS as Record<string, unknown>;
+  //const currentStatus = (statusData?.status_name as string) || 'to be confirmed';
 
   const filtered = useMemo(() => {
     const term = search.trim().toLowerCase()
@@ -102,14 +103,15 @@ export function RecruitTable({ recruits }: { recruits: RecruitListItem[] }) {
                 <Link href={`/recruits/${r.id}`} className="flex items-center gap-3 px-5 py-4 active:bg-slate-50">
                   <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-blue-100 text-sm font-bold text-blue-600">{initials(r)}</div>
                   <div className="min-w-0">
-                    <div className="truncate font-bold text-gray-800">{name(r)}</div>
+                    <div className="truncate font-bold text-gray-800">{fullName(r)}</div>
                     <div className="mt-0.5"><StarsPlaceholder /></div>
                     <div className="truncate text-sm text-slate-500">
                       {[r.graduation_year, r.positions.join('/'), r.high_school].filter(Boolean).join(' · ')}
                     </div>
                   </div>
-                  {/* @ts-expect-error pipeline_stage arrives in F3 schema */}
-                  <StageBadge stage={r.pipeline_stage} /> 
+                  <div className="mt-2 mb-2">
+                      <StageBadge stage={r.pipeline_stage} />
+                  </div>
                 </Link>
               </li>
             ))}
@@ -134,7 +136,7 @@ export function RecruitTable({ recruits }: { recruits: RecruitListItem[] }) {
                       <Link href={`/recruits/${r.id}`} className="flex items-center gap-4">
                         <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100 text-sm font-bold text-blue-600">{initials(r)}</div>
                         <div>
-                          <span className="font-bold text-gray-800 hover:text-indigo-600">{name(r)}</span>
+                          <span className="font-bold text-gray-800 hover:text-indigo-600">{fullName(r)}</span>
                           <div className="mt-1"><StarsPlaceholder /></div>
                         </div>
                       </Link>
@@ -144,9 +146,9 @@ export function RecruitTable({ recruits }: { recruits: RecruitListItem[] }) {
                     <td className="px-6 py-4 text-gray-500">{r.high_school}</td>
                     <td className="px-6 py-4">
                       {/*Change with real data when available*/}
-                      <span className={`border rounded-full px-2.5 py-0.5 text-xs font-semibold shadow-sm ${getStatusColor(currentStatus)}`}>
-                        {currentStatus.toUpperCase()}
-                      </span>
+                    <div className="mt-2 mb-2">
+                      <StageBadge stage={r.pipeline_stage} />
+                    </div>
                     </td>
                   </tr>
                 ))}
