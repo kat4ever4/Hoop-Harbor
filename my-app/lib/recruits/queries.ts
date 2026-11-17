@@ -60,6 +60,8 @@ export async function getStaffOptions(): Promise<StaffOption[]> {
   
   if (error) throw error
     return data ?? []
+}
+
 export async function listRecruitNotes(id: string): Promise<{ notes: RecruitNote[]; error?: string }> {
   if (!UUID.test(id)) return { notes: [] }
   const supabase = await createClient()
