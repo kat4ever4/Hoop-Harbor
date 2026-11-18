@@ -16,7 +16,7 @@ export function MapStep({ w, update }: Props) {
   const doubled = duplicateTargets(w.mapping)
 
   const setField = (header: string, field: string) =>
-    update({ mapping: { ...w.mapping, [header]: field }, preview: null })
+    update({ mapping: { ...w.mapping, [header]: field }, preview: null, duplicateChoices: {} })
 
   return (
     <div className="flex flex-col gap-4">

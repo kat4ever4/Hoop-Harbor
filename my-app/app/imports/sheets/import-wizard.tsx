@@ -4,6 +4,8 @@ import { useState } from 'react'
 import { EMPTY_WIZARD, STEPS, type StepIndex, type WizardState } from '@/lib/imports/types'
 import { UploadStep } from './upload-step'
 import { MapStep, mapStepReady } from './map-step'
+import { PreviewStep } from './preview-step'
+import { CommitStep } from './commit-step'
 
 export function ImportWizard() {
   // All wizard data in one place, so Back never loses work.
@@ -16,7 +18,8 @@ export function ImportWizard() {
   const canNext =
     w.step === 0 ? w.file !== null && w.headers.length > 0
     : w.step === 1 ? mapStepReady(w)
-    : true // Preview/Commit/Summary rules come later this week
+    : w.step === 2 ? w.preview !== null
+    : false // Commit uses its own Import button; Summary is the end
 
   return (
     <div className="flex flex-col gap-6">
@@ -40,14 +43,21 @@ export function ImportWizard() {
       <section className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
         {w.step === 0 && <UploadStep w={w} update={update} />}
         {w.step === 1 && <MapStep w={w} update={update} />}
-        {w.step >= 2 && <p>{STEPS[w.step]} step goes here.</p>}
+        {w.step === 2 && <PreviewStep w={w} update={update} />}
+        {w.step === 3 && <CommitStep w={w} update={update} />}
+        {w.step === 4 && w.summary && (
+          <p>Imported {w.summary.created}, skipped {w.summary.skipped}. (Full summary comes Friday.)</p>
+        )}
       </section>
 
       <div className="flex justify-between">
-        <button disabled={w.step === 0} onClick={() => go((w.step - 1) as StepIndex)}
+        {/* After importing, there's no going back: Undo (Friday) is the way to reverse it. */}
+        <button disabled={w.step === 0 || w.step === last} onClick={() => go((w.step - 1) as StepIndex)}
           className="rounded-lg border px-4 py-2 disabled:opacity-40">Back</button>
-        <button disabled={w.step === last || !canNext} onClick={() => go((w.step + 1) as StepIndex)}
-          className="rounded-lg bg-blue-600 px-4 py-2 text-white disabled:opacity-40">Next</button>
+        {w.step < 3 && (
+          <button disabled={!canNext} onClick={() => go((w.step + 1) as StepIndex)}
+            className="rounded-lg bg-blue-600 px-4 py-2 text-white disabled:opacity-40">Next</button>
+        )}
       </div>
     </div>
   )
