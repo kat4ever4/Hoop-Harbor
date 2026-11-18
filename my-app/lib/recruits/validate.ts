@@ -106,8 +106,16 @@ export function parseRecruitForm(form: FormLike): { values: RecruitValues; error
     academic_information: text(form, 'academic_information'),
     video_links,
     profile_links,
+    pipeline_stage: 'to_be_confirmed',
     medical_notes: text(form, 'medical_notes'),
   }
 
   return { values, errors }
+}
+
+export type Recruit = RecruitValues & {
+  id: string
+  extra_notes: string | null // <-- lives here as a read-only DB column
+  created_at: string
+  updated_at: string
 }

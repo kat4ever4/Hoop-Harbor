@@ -1,14 +1,27 @@
 import React from 'react';
 import { StageKey, stageByKey } from '@/lib/status/stages'; // Adjust import path as needed
 
-const COLORS: Record<string, string> = {
-  slate: 'bg-slate-100 text-slate-700',
-  blue: 'bg-blue-100 text-blue-800',
-  amber: 'bg-amber-100 text-amber-800',
-  green: 'bg-green-100 text-green-800',
-  purple: 'bg-purple-100 text-purple-800',
-  red: 'bg-red-100 text-red-800',
-};
+export function getStatusColor(status: string) {
+  switch (status?.toLowerCase()) {
+    case 'identified':
+      return 'bg-blue-500 text-white border-blue-600'
+    case 'evaluating':
+      return 'bg-yellow-500 text-white border-yellow-600'
+    case 'priority':
+      return 'bg-purple-500 text-white border-purple-600'
+    case 'offered':
+      return 'bg-emerald-500 text-white border-emerald-600'
+    case 'committed to usna':
+      return 'bg-indigo-600 text-white border-indigo-700 ring-2 ring-indigo-300'
+    case 'committed elsewhere':
+      return 'bg-slate-500 text-white border-slate-600'
+    case 'not pursuing':
+      return 'bg-red-500 text-white border-red-600'
+    case 'to be confirmed':
+    default:
+      return 'bg-slate-300 text-slate-700 border-slate-400'
+  }
+}
 
 interface StageBadgeProps {
   stage: StageKey | null;
@@ -32,11 +45,11 @@ export function StageBadge({ stage }: StageBadgeProps) {
     );
   }
   
-  const { label, color } = stageData;
-  const colorClass = COLORS[color] || COLORS.slate;
+  const { label } = stageData;
+  const colorClass = getStatusColor(label);
 
   return (
-    <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${colorClass}`}>
+    <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium border ${colorClass}`}>
       {label}
     </span>
   );
