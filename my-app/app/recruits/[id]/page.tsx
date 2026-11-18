@@ -11,6 +11,7 @@ import { inchesToHeight } from '@/lib/format-height'
 import { AccessNotice } from '../access-notice'
 import { RecruitNotFound } from '../not-found-message'
 import { StatusSection } from './status-section';
+import { ImportedFromBadge } from '@/components/imported-from-badge'
 import { StageBadge } from '@/components/stage-badge';
 
 function Card({ title, children }: { title: string; children: ReactNode }) {
@@ -49,10 +50,10 @@ function Profile({ r, status, staff }: { r: Recruit; status: RecruitStatus | nul
       <div className="mb-6 flex flex-col gap-4 rounded-2xl bg-gradient-to-br from-slate-800 to-indigo-900 p-6 text-white sm:flex-row sm:items-end sm:justify-between">
         <div>
           <h1 className="text-3xl font-extrabold tracking-tight">{fullName(r)}</h1>
+          <ImportedFromBadge source={(r as { import_source?: string | null }).import_source} />
           <div className="mt-2 mb-2">
               <StageBadge stage={r.pipeline_stage} />
-          </div>
-
+          </div>         
           <p className="mt-1 text-indigo-100">
             {[r.graduation_year && `Class of ${r.graduation_year}`, r.positions.join(' / '), r.high_school].filter(Boolean).join(' · ')}
           </p>

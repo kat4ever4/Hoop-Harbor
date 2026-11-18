@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
 import { usePathname } from "next/navigation";
-import { Briefcase, Home, Settings, Users } from "lucide-react";
+import { Briefcase, Home, Settings, Users, Upload} from "lucide-react";
 import { APP_CONFIG } from "@/lib/app-config";
 
 const NAV_ITEMS = [
@@ -12,6 +12,7 @@ const NAV_ITEMS = [
   { href: "/recruits", label: "Roster", icon: Users },
   { href: "/staff", label: "Staff", icon: Briefcase },
   { href: "/settings", label: "Settings", icon: Settings },
+  { href: "/imports/sheets", label: "Import", icon: Upload },
 ];
 
 // usePathname() is only known at request time, so the links that highlight the
