@@ -1,6 +1,6 @@
 import 'server-only'
 import { createClient } from '@/lib/supabase/server'
-import { isLikelyDuplicate, normalize } from '@/lib/recruits/duplicates'
+import { isLikelyDuplicate, normalize, type DuplicateCandidate } from '@/lib/recruits/duplicates'
 import { findPossibleDuplicates } from '@/lib/recruits/duplicates-query'
 import type { RecruitValues } from '@/lib/recruits/fields'
 import { readImportRows, type ColumnMapping } from './csv'
@@ -43,7 +43,7 @@ async function listAuthors(client: Client): Promise<Staff[]> {
 }
 
 export async function* reviewImport(client: Client, path: string, mapping: ColumnMapping): AsyncGenerator<ReviewedRow> {
-  const seen = new Map<string, RecruitValues[]>()
+  const seen = new Map<string, DuplicateCandidate[]>()
   let authors: Staff[] | undefined
 
   for await (const { rowNumber, values, recruit, reason } of readImportRows(path, mapping)) {
@@ -74,7 +74,10 @@ export async function* reviewImport(client: Client, path: string, mapping: Colum
     const key = `${recruit.graduation_year}:${normalize(recruit.last_name)}`
     const earlier = seen.get(key) ?? []
     const sameFile = earlier.some((candidate) => isLikelyDuplicate(recruit, candidate))
-    earlier.push(recruit)
+    earlier.push({
+      first_name: recruit.first_name, last_name: recruit.last_name, preferred_name: recruit.preferred_name,
+      graduation_year: recruit.graduation_year, high_school: recruit.high_school, club_team: recruit.club_team,
+    })
     seen.set(key, earlier)
 
     const hit = matches[0]
