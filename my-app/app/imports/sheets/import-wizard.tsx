@@ -6,6 +6,7 @@ import { UploadStep } from './upload-step'
 import { MapStep, mapStepReady } from './map-step'
 import { PreviewStep } from './preview-step'
 import { CommitStep } from './commit-step'
+import { SummaryStep } from './summary-step'
 
 export function ImportWizard() {
   // All wizard data in one place, so Back never loses work.
@@ -45,9 +46,7 @@ export function ImportWizard() {
         {w.step === 1 && <MapStep w={w} update={update} />}
         {w.step === 2 && <PreviewStep w={w} update={update} />}
         {w.step === 3 && <CommitStep w={w} update={update} />}
-        {w.step === 4 && w.summary && (
-          <p>Imported {w.summary.created}, skipped {w.summary.skipped}. (Full summary comes Friday.)</p>
-        )}
+        {w.step === 4 && <SummaryStep w={w} onStartOver={() => setW(EMPTY_WIZARD)} />}
       </section>
 
       <div className="flex justify-between">

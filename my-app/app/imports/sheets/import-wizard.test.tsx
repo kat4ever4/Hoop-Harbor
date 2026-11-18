@@ -23,6 +23,7 @@ describe('ImportWizard', () => {
     await user.click(screen.getByLabelText('Create anyway'))
     await user.click(screen.getByRole('button', { name: 'Next' }))
     await user.click(screen.getByRole('button', { name: 'Import 3 recruits' }))
-    await waitFor(() => expect(screen.getByText(/Imported 3, skipped 0/)).toBeTruthy(), { timeout: 3000 })
+    await waitFor(() => expect(screen.getByText(/Import complete\. 3 recruits added/)).toBeTruthy(), { timeout: 3000 })
+    expect(screen.getByRole('button', { name: /download skipped rows/i })).toBeTruthy()
   }, 10000)
 })

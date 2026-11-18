@@ -12,6 +12,7 @@ import { RecruitNotFound } from '../not-found-message'
 import { StatusSection } from './status-section';
 import { getStatusColor } from '@/lib/status/colors';
 import { MOCK_RECRUIT_STATUS, MOCK_STAFF_OPTIONS } from '@/lib/status/mock';
+import { ImportedFromBadge } from '@/components/imported-from-badge'
 
 function Card({ title, children }: { title: string; children: ReactNode }) {
   return (
@@ -63,6 +64,7 @@ function Profile({ r }: { r: Recruit }) {
       <div className="mb-6 flex flex-col gap-4 rounded-2xl bg-gradient-to-br from-slate-800 to-indigo-900 p-6 text-white sm:flex-row sm:items-end sm:justify-between">
         <div>
           <h1 className="text-3xl font-extrabold tracking-tight">{fullName(r)}</h1>
+          <ImportedFromBadge source={(r as { import_source?: string | null }).import_source} />
           <span className={`border rounded-full px-2.5 py-0.5 text-xs font-semibold shadow-sm ${getStatusColor(currentStatus)}`}>
               {currentStatus.toUpperCase()}
           </span>
