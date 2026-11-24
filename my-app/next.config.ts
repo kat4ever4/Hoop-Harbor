@@ -2,6 +2,8 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   cacheComponents: true,
+  serverExternalPackages: ["knex"],
+  experimental: { serverActions: { bodySizeLimit: "4mb" } },
   // Temporary: send the homepage to the recruit list until the real Home page exists.
   // /roster is the old address of the list, kept so old links still work.
   async redirects() {

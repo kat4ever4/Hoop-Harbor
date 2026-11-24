@@ -53,6 +53,7 @@ export type Recruit = RecruitValues & {
   gpa_scale: number | null
   created_at: string
   updated_at: string
+  import_source?: string | null
 }
 
 export const EDITABLE_COLUMNS = [

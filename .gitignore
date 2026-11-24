@@ -1,0 +1,9 @@
+# Local coding agent files
+.agents/
+.codex/
+.claude/
+.cursor/
+AGENTS.md
+AGENTS.override.md
+CLAUDE.md
+skills-lock.json
