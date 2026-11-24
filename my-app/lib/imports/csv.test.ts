@@ -1,8 +1,8 @@
 // @vitest-environment node
-import { readdir } from 'node:fs/promises'
+import { readFile, readdir } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { describe, expect, it, vi } from 'vitest'
-import { readImportRows } from './csv'
+import { getCsvHeaders, readImportRows } from './csv'
 
 vi.mock('server-only', () => ({}))
 
@@ -33,6 +33,18 @@ describe('readImportRows', () => {
         }),
       })])
     }
+  })
+
+  it('exposes mappable headers from standard and legacy File uploads', async () => {
+    const standard = new File(['First Name,"School, Club",Grad Year\n'], 'standard.csv')
+    expect(await getCsvHeaders(standard)).toEqual(['First Name', 'School, Club', 'Grad Year'])
+
+    const directory = resolve('../fake_csv_files')
+    const name = (await readdir(directory)).find((file) => file.endsWith('Recruit 1.csv'))!
+    const file = new File([Uint8Array.from(await readFile(resolve(directory, name)))], name)
+    expect(await getCsvHeaders(file)).toEqual(expect.arrayContaining(Object.keys(legacyMapping)))
+    const [row] = await Array.fromAsync(readImportRows(file, legacyMapping))
+    expect(row.recruit).toMatchObject({ first_name: 'Recruit', last_name: '1' })
   })
 
   it('propagates failure to read the file', async () => {

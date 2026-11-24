@@ -1,34 +1,35 @@
-import 'server-only'
-import { basename } from 'node:path'
+'use server'
+
+import { revalidatePath } from 'next/cache'
 import type { ColumnMapping } from './csv'
-import { openImportSession, reviewImport } from './preview'
-import { writeImport } from './store'
+import * as imports from './server'
+import type { DuplicateChoices } from './server'
 
-export { previewImport } from './preview'
+function checkFile(file: File) {
+  if (!(file instanceof File) || !file.name.toLowerCase().endsWith('.csv'))
+    throw new Error('Please upload a CSV file.')
+  if (file.size > 3 * 1024 * 1024) throw new Error('CSV files must be 3 MB or smaller.')
+}
 
-export type DuplicateChoices = Readonly<Record<number, 'skip' | 'create'>>
-export type CommitResult = { batchId: string; created: number; skipped: number; errors: number }
+export async function getHeaders(file: File) {
+  checkFile(file)
+  return imports.getHeaders(file)
+}
 
-/** Call with a trusted server path. Keys in duplicateChoices are preview row numbers. */
-export async function commitImport(
-  path: string,
-  mapping: ColumnMapping,
-  duplicateChoices: DuplicateChoices = {},
-  sheetName = basename(path),
-): Promise<CommitResult> {
-  const { client, userId } = await openImportSession()
+export async function previewImport(file: File, mapping: ColumnMapping) {
+  checkFile(file)
+  return imports.previewImport(file, mapping)
+}
 
-  // Rebuild the preview on the server. Only explicit choices can override a duplicate.
-  async function* decisions() {
-    for await (const { preview, recruit, note } of reviewImport(client, path, mapping)) {
-      if (!recruit) {
-        yield { status: 'error' } as const
-      } else if (preview.status === 'duplicate' && duplicateChoices[preview.rowNumber] !== 'create') {
-        yield { status: 'skip' } as const
-      } else {
-        yield { status: 'create', recruit, note, duplicate: preview.status === 'duplicate' } as const
-      }
-    }
-  }
-  return writeImport(userId, sheetName, decisions())
+export async function commitImport(file: File, mapping: ColumnMapping, sheetName: string, choices?: DuplicateChoices) {
+  checkFile(file)
+  const result = await imports.commitImport(file, mapping, sheetName, choices)
+  revalidatePath('/recruits', 'layout')
+  return result
+}
+
+export async function undoImport(batchId: string) {
+  const result = await imports.undoImport(batchId)
+  revalidatePath('/recruits', 'layout')
+  return result
 }

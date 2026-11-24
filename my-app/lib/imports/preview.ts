@@ -3,7 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import { isLikelyDuplicate, normalize, type DuplicateCandidate } from '@/lib/recruits/duplicates'
 import { findPossibleDuplicates } from '@/lib/recruits/duplicates-query'
 import type { RecruitValues } from '@/lib/recruits/fields'
-import { readImportRows, type ColumnMapping } from './csv'
+import { readImportRows, type ColumnMapping, type CsvInput } from './csv'
 
 export type PreviewRow = {
   rowNumber: number
@@ -13,9 +13,12 @@ export type PreviewRow = {
   match?: { id: string; name: string; gradYear: number | null; school: string | null }
 }
 
+export type ImportError = { row: number; reason: string }
+
 export type PreviewResult = {
   counts: Record<PreviewRow['status'], number>
   rows: PreviewRow[]
+  errors: ImportError[]
 }
 
 type Client = Awaited<ReturnType<typeof createClient>>
@@ -42,14 +45,14 @@ async function listAuthors(client: Client): Promise<Staff[]> {
   return data
 }
 
-export async function* reviewImport(client: Client, path: string, mapping: ColumnMapping): AsyncGenerator<ReviewedRow> {
+export async function* reviewImport(client: Client, input: CsvInput, mapping: ColumnMapping): AsyncGenerator<ReviewedRow> {
   const seen = new Map<string, DuplicateCandidate[]>()
   let authors: Staff[] | undefined
 
-  for await (const { rowNumber, values, recruit, reason } of readImportRows(path, mapping)) {
+  for await (const { rowNumber, values, recruit, reason } of readImportRows(input, mapping)) {
     const base = { rowNumber, values }
     if (!recruit) {
-      yield { preview: { ...base, status: 'error', reason } }
+      yield { preview: { ...base, status: 'error', reason: reason ?? 'Invalid recruit.' } }
       continue
     }
 
@@ -93,13 +96,14 @@ export async function* reviewImport(client: Client, path: string, mapping: Colum
   }
 }
 
-/** Preview a trusted server-side CSV path without writing to the database. */
-export async function previewImport(path: string, mapping: ColumnMapping): Promise<PreviewResult> {
+/** Preview an uploaded CSV or trusted server path without writing to the database. */
+export async function previewImport(input: CsvInput, mapping: ColumnMapping): Promise<PreviewResult> {
   const { client } = await openImportSession()
-  const result: PreviewResult = { counts: { new: 0, duplicate: 0, error: 0 }, rows: [] }
-  for await (const { preview } of reviewImport(client, path, mapping)) {
+  const result: PreviewResult = { counts: { new: 0, duplicate: 0, error: 0 }, rows: [], errors: [] }
+  for await (const { preview } of reviewImport(client, input, mapping)) {
     result.rows.push(preview)
     result.counts[preview.status]++
+    if (preview.status === 'error') result.errors.push({ row: preview.rowNumber, reason: preview.reason! })
   }
   return result
 }

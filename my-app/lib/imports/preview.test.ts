@@ -1,4 +1,5 @@
 // @vitest-environment node
+import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { expect, it, vi } from 'vitest'
 import { isLikelyDuplicate } from '@/lib/recruits/duplicates'
@@ -32,12 +33,16 @@ vi.mock('@/lib/recruits/duplicates-query', () => ({
 }))
 
 it('previews 15 new recruits, 3 possible duplicates and 2 errors without any writes', async () => {
-  const result = await previewImport(resolve('tests/fixtures/import_test.csv'), {
+  const csv = await readFile(resolve('tests/fixtures/import_test.csv'), 'utf8')
+  const result = await previewImport(new File([csv], 'import_test.csv'), {
     'First Name': 'first_name', 'Last Name': 'last_name', 'Grad Year': 'graduation_year',
     School: 'high_school', Notes: 'notes', Coach: 'coach',
   })
   expect(result.counts).toEqual({ new: 15, duplicate: 3, error: 2 })
   expect(result.rows[0].values.notes).toBe('Good footwork, kept her head up.')
   expect(result.rows[15].match?.name).toBe('Reese Brooks')
-  expect(result.rows[18].reason).toMatch(/first name is required/i)
+  expect(result.errors).toEqual([
+    { row: 20, reason: expect.stringMatching(/first name is required/i) },
+    { row: 21, reason: expect.stringMatching(/4-digit year/i) },
+  ])
 })

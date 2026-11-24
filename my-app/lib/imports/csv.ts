@@ -1,11 +1,14 @@
 import 'server-only'
 import { createReadStream } from 'node:fs'
+import { Readable } from 'node:stream'
+import type { ReadableStream as NodeReadableStream } from 'node:stream/web'
 import { parse } from 'csv-parse'
 import { inchesToInput } from '@/lib/format-height'
 import { EDITABLE_COLUMNS, type RecruitValues } from '@/lib/recruits/fields'
 import { parseRecruitForm } from '@/lib/recruits/validate'
 
 export type ColumnMapping = Record<string, string>
+export type CsvInput = File | string
 
 const fields = new Set<string>([
   ...EDITABLE_COLUMNS,
@@ -31,14 +34,16 @@ function mapValues(cells: Map<string, string>, mapping: ColumnMapping) {
   return values
 }
 
-async function* readMappedRows(path: string, mapping: ColumnMapping): AsyncGenerator<MappedRow> {
-  const source = createReadStream(path)
+async function* sheetRecords(input: CsvInput): AsyncGenerator<{ rowNumber: number; cells: string[] }> {
+  const source = typeof input === 'string'
+    ? createReadStream(input)
+    : Readable.fromWeb(input.stream() as NodeReadableStream)
   const parser = parse({ bom: true, trim: true, relax_column_count: true, max_record_size: 64 * 1024 })
-  source.on('error', (error) => parser.destroy(error))
+  source.on('error', (error: Error) => parser.destroy(error))
   source.pipe(parser)
 
-  let headers: string[] | undefined
   let rowNumber = 0
+  let foundHeader = false
   let legacy = false
   const worksheet = new Map<string, string>()
 
@@ -46,42 +51,30 @@ async function* readMappedRows(path: string, mapping: ColumnMapping): AsyncGener
     for await (const cells of parser as AsyncIterable<string[]>) {
       rowNumber++
       if (cells.every((cell) => !cell)) continue
-      if (!headers) {
-        headers = cells
-        legacy = headers[0] === 'Recruit Information' && headers.slice(1).every((cell) => !cell)
-        if (!legacy && new Set(headers.filter(Boolean)).size !== headers.filter(Boolean).length)
-          throw new Error('CSV column headers must be unique.')
-        if (!legacy) {
-          for (const [header, field] of Object.entries(mapping)) {
-            if (field !== 'ignore' && !headers.includes(header))
-              throw new Error(`CSV column not found: ${header}`)
-          }
-        }
+      if (!foundHeader) {
+        foundHeader = true
+        legacy = cells[0] === 'Recruit Information' && cells.slice(1).every((cell) => !cell)
+        if (legacy) continue
+      }
+
+      if (!legacy) {
+        yield { rowNumber, cells }
         continue
       }
 
-      if (legacy) {
-        // The old sheets store one recruit as field labels followed by values.
-        if (cells[0] === 'Communication Log') break
-        if (cells[0]) worksheet.set(cells[0], cells[1] ?? '')
-        continue
-      }
-
-      const values = mapValues(new Map(headers.map((header, i) => [header, cells[i] ?? ''])), mapping)
-      yield {
-        rowNumber,
-        values,
-        reason: cells.length === headers.length ? undefined : `Expected ${headers.length} columns, found ${cells.length}.`,
-      }
+      // The old sheets store one recruit as field labels followed by values.
+      if (cells[0] === 'Communication Log') break
+      if (cells[0]) worksheet.set(cells[0], cells[1] ?? '')
     }
 
-    if (!headers) throw new Error('The CSV is empty.')
+    if (!foundHeader) throw new Error('The CSV is empty.')
     if (legacy) {
       const name = (worksheet.get('Player Name') ?? '').split(/\s+/).filter(Boolean)
       const last = name.length > 1 ? name.pop()! : ''
       worksheet.set('First Name', name.join(' '))
       worksheet.set('Last Name', last)
-      yield { rowNumber: 1, values: mapValues(worksheet, mapping) }
+      yield { rowNumber: 0, cells: [...worksheet.keys()] }
+      yield { rowNumber: 1, cells: [...worksheet.values()] }
     }
   } finally {
     source.destroy()
@@ -89,9 +82,39 @@ async function* readMappedRows(path: string, mapping: ColumnMapping): AsyncGener
   }
 }
 
-/** Call with a trusted server-side path. The CSV is read one record at a time. */
-export async function* readImportRows(path: string, mapping: ColumnMapping): AsyncGenerator<ImportRow> {
-  for await (const row of readMappedRows(path, mapping)) {
+function checkHeaders(headers: string[]) {
+  const named = headers.filter(Boolean)
+  if (new Set(named).size !== named.length) throw new Error('CSV column headers must be unique.')
+  return named
+}
+
+export async function getCsvHeaders(input: CsvInput): Promise<string[]> {
+  for await (const { cells } of sheetRecords(input)) return checkHeaders(cells)
+  throw new Error('The CSV is empty.')
+}
+
+async function* readMappedRows(input: CsvInput, mapping: ColumnMapping): AsyncGenerator<MappedRow> {
+  let headers: string[] | undefined
+  for await (const { rowNumber, cells } of sheetRecords(input)) {
+    if (!headers) {
+      const named = checkHeaders(cells)
+      for (const [header, field] of Object.entries(mapping)) {
+        if (field !== 'ignore' && !named.includes(header)) throw new Error(`CSV column not found: ${header}`)
+      }
+      headers = cells
+      continue
+    }
+    yield {
+      rowNumber,
+      values: mapValues(new Map(headers.map((header, i) => [header, cells[i] ?? ''])), mapping),
+      reason: cells.length === headers.length ? undefined : `Expected ${headers.length} columns, found ${cells.length}.`,
+    }
+  }
+}
+
+/** A File or trusted server-side path. The CSV is read one record at a time. */
+export async function* readImportRows(input: CsvInput, mapping: ColumnMapping): AsyncGenerator<ImportRow> {
+  for await (const row of readMappedRows(input, mapping)) {
     if (row.reason) {
       yield row
       continue
